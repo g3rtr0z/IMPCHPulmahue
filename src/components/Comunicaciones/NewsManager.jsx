@@ -183,130 +183,142 @@ export default function NewsManager() {
                 </button>
             </div>
 
-            {/* Formulario de Creación */}
+            {/* Formulario de Creación (Sin transiciones) */}
             {showForm ? (
-                <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 md:p-8 animate-in slide-in-from-bottom-4 duration-300">
-                    <h3 className="text-xl font-serif font-bold text-impch-dark-panel mb-6">
-                        Redactar Nueva Noticia
-                    </h3>
-                    <form onSubmit={handleCreate} className="space-y-6">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div className="md:col-span-2">
-                                <label className="block text-sm font-semibold text-slate-700 mb-2">
-                                    Título de la Noticia <span className="text-red-500">*</span>
-                                </label>
-                                <input
-                                    type="text"
-                                    value={newPost.titulo}
-                                    onChange={(e) =>
-                                        setNewPost({ ...newPost, titulo: e.target.value })
-                                    }
-                                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-impch-primary/20 focus:border-impch-primary transition-all text-sm"
-                                    placeholder="Ej: Gran Servicio de Acción de Gracias"
-                                    required
-                                />
-                            </div>
+                <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 md:p-8">
+                    <div className="flex items-center justify-between mb-8 border-b border-slate-100 pb-6">
+                        <h3 className="text-xl font-serif font-bold text-impch-dark-panel">
+                            Redactar Nueva Noticia
+                        </h3>
+                        <p className="text-xs text-slate-400 font-medium">Completa los campos para publicar</p>
+                    </div>
 
-                            <div className="md:col-span-2">
-                                <label className="block text-sm font-semibold text-slate-700 mb-2">
-                                    Breve Resumen <span className="text-red-500">*</span>
-                                </label>
-                                <textarea
-                                    value={newPost.resumen}
-                                    onChange={(e) =>
-                                        setNewPost({ ...newPost, resumen: e.target.value })
-                                    }
-                                    rows="2"
-                                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-impch-primary/20 focus:border-impch-primary transition-all text-sm resize-none"
-                                    placeholder="Un texto corto que aparecerá en la tarjeta de la noticia..."
-                                    required
-                                />
-                            </div>
+                    <form onSubmit={handleCreate} className="space-y-8">
+                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-                            <div className="md:col-span-2">
-                                <label className="block text-sm font-semibold text-slate-700 mb-2">
-                                    Contenido Completo <span className="text-red-500">*</span>
-                                </label>
-                                <textarea
-                                    value={newPost.contenido}
-                                    onChange={(e) =>
-                                        setNewPost({ ...newPost, contenido: e.target.value })
-                                    }
-                                    rows="8"
-                                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-impch-primary/20 focus:border-impch-primary transition-all text-sm resize-y"
-                                    placeholder="Escribe el cuerpo completo de la noticia (Puedes usar Markdown para dar formato si lo deseas)..."
-                                    required
-                                />
-                            </div>
-
-                            <div className="md:col-span-1">
-                                <label className="block text-sm font-semibold text-slate-700 mb-2 flex items-center gap-2">
-                                    <ImageIcon className="w-4 h-4 text-slate-400" />
-                                    Imagen Destacada
-                                </label>
-                                <div className="flex items-center gap-4">
-                                    <label className="flex flex-col items-center justify-center w-32 h-32 border-2 border-dashed border-slate-200 rounded-2xl hover:bg-slate-50 hover:border-impch-primary cursor-pointer transition-all overflow-hidden relative group">
-                                        {imagePreview ? (
-                                            <img src={imagePreview} className="w-full h-full object-cover" alt="Preview" />
-                                        ) : (
-                                            <div className="flex flex-col items-center text-slate-400">
-                                                <Plus className="w-6 h-6 mb-1" />
-                                                <span className="text-[10px] uppercase font-bold tracking-tighter">Subir</span>
-                                            </div>
-                                        )}
-                                        <input type="file" className="hidden" accept="image/*" onChange={handleImageChange} />
+                            {/* Columna Principal: Contenido */}
+                            <div className="lg:col-span-2 space-y-6">
+                                <div>
+                                    <label className="block text-xs font-bold uppercase tracking-widest text-slate-400 mb-2">
+                                        Título de la Noticia <span className="text-red-500">*</span>
                                     </label>
-                                    <div className="flex-1">
-                                        <p className="text-xs text-slate-500 mb-2 leading-relaxed">
-                                            Selecciona una fotografía para la noticia. Se recomienda un tamaño de 800x500px para mejor visualización.
-                                        </p>
-                                        <button
-                                            type="button"
-                                            onClick={() => { setImageFile(null); setImagePreview(null); }}
-                                            className="text-[10px] font-bold uppercase text-red-500 hover:text-red-700 underline"
-                                        >
-                                            Quitar imagen
-                                        </button>
-                                    </div>
+                                    <input
+                                        type="text"
+                                        value={newPost.titulo}
+                                        onChange={(e) => setNewPost({ ...newPost, titulo: e.target.value })}
+                                        className="w-full px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl focus:bg-white focus:ring-2 focus:ring-impch-primary/20 focus:border-impch-primary transition-all text-sm font-medium"
+                                        placeholder="Ej: Gran Servicio de Acción de Gracias..."
+                                        required
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="block text-xs font-bold uppercase tracking-widest text-slate-400 mb-2">
+                                        Resumen de Portada <span className="text-red-500">*</span>
+                                    </label>
+                                    <textarea
+                                        value={newPost.resumen}
+                                        onChange={(e) => setNewPost({ ...newPost, resumen: e.target.value })}
+                                        rows="2"
+                                        className="w-full px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl focus:bg-white focus:ring-2 focus:ring-impch-primary/20 focus:border-impch-primary transition-all text-sm resize-none font-medium"
+                                        placeholder="Un texto corto y llamativo para la miniatura..."
+                                        required
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="block text-xs font-bold uppercase tracking-widest text-slate-400 mb-2">
+                                        Cuerpo de la Noticia <span className="text-red-500">*</span>
+                                    </label>
+                                    <textarea
+                                        value={newPost.contenido}
+                                        onChange={(e) => setNewPost({ ...newPost, contenido: e.target.value })}
+                                        rows="10"
+                                        className="w-full px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl focus:bg-white focus:ring-2 focus:ring-impch-primary/20 focus:border-impch-primary transition-all text-sm resize-y font-medium"
+                                        placeholder="Escribe aquí toda la información del evento..."
+                                        required
+                                    />
                                 </div>
                             </div>
 
-                            <div className="md:col-span-1">
-                                <label className="block text-sm font-semibold text-slate-700 mb-2">
-                                    Autor / Departamento
-                                </label>
-                                <input
-                                    type="text"
-                                    value={newPost.autor}
-                                    onChange={(e) =>
-                                        setNewPost({ ...newPost, autor: e.target.value })
-                                    }
-                                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-impch-primary/20 focus:border-impch-primary transition-all text-sm"
-                                    placeholder="Ej: Comunicaciones / Depto. Jóvenes"
-                                />
+                            {/* Columna Lateral: Media y Autor */}
+                            <div className="space-y-6">
+                                <div className="p-6 bg-slate-50/50 rounded-3xl border border-slate-100">
+                                    <label className="block text-xs font-bold uppercase tracking-widest text-slate-400 mb-4 flex items-center gap-2">
+                                        <ImageIcon className="w-4 h-4" />
+                                        Imagen Destacada
+                                    </label>
+                                    <div className="flex flex-col items-center">
+                                        <label className="w-full h-48 border-2 border-dashed border-slate-200 rounded-2xl hover:bg-white hover:border-impch-primary cursor-pointer transition-all overflow-hidden relative group flex flex-col items-center justify-center bg-white shadow-inner">
+                                            {imagePreview ? (
+                                                <img src={imagePreview} className="w-full h-full object-cover" alt="Preview" />
+                                            ) : (
+                                                <div className="flex flex-col items-center text-slate-400">
+                                                    <div className="w-12 h-12 bg-slate-50 rounded-full flex items-center justify-center mb-2">
+                                                        <Plus className="w-6 h-6" />
+                                                    </div>
+                                                    <span className="text-[10px] uppercase font-bold tracking-widest text-slate-500">Cargar Archivo</span>
+                                                </div>
+                                            )}
+                                            <input type="file" className="hidden" accept="image/*" onChange={handleImageChange} />
+                                        </label>
+                                        <p className="text-[10px] text-slate-400 mt-3 text-center leading-relaxed">
+                                            Se enviará a tu nube de Cloudinary automáticamente al publicar.
+                                        </p>
+                                        {imagePreview && (
+                                            <button
+                                                type="button"
+                                                onClick={() => { setImageFile(null); setImagePreview(null); }}
+                                                className="mt-2 text-[10px] font-bold uppercase text-red-500 hover:text-red-700"
+                                            >
+                                                Quitar imagen
+                                            </button>
+                                        )}
+                                    </div>
+                                </div>
+
+                                <div className="p-6 bg-slate-50/50 rounded-3xl border border-slate-100">
+                                    <label className="block text-xs font-bold uppercase tracking-widest text-slate-400 mb-4 flex items-center gap-2">
+                                        <Newspaper className="w-4 h-4" />
+                                        Detalles de Publicación
+                                    </label>
+                                    <div className="space-y-4">
+                                        <div>
+                                            <label className="block text-[10px] font-bold text-slate-400 mb-1 uppercase tracking-wider">Autor / Depto</label>
+                                            <input
+                                                type="text"
+                                                value={newPost.autor}
+                                                onChange={(e) => setNewPost({ ...newPost, autor: e.target.value })}
+                                                className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-impch-primary/20 outline-none text-xs font-bold"
+                                                placeholder="Ej: Comunicaciones"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
-                        <div className="flex justify-end pt-4 border-t border-slate-100">
+                        {/* Barra de Acciones */}
+                        <div className="flex items-center justify-end gap-3 pt-8 border-t border-slate-100">
                             <button
                                 type="button"
                                 onClick={() => setShowForm(false)}
-                                className="px-6 py-2.5 text-slate-600 font-semibold text-sm hover:text-slate-900 transition-colors mr-2"
+                                className="px-6 py-3 text-slate-400 font-bold text-xs uppercase tracking-widest hover:text-slate-900 transition-colors"
                             >
                                 Cancelar
                             </button>
                             <button
                                 type="submit"
                                 disabled={isSaving}
-                                className={`bg-impch-accent text-white px-8 py-2.5 rounded-xl font-bold transition-all shadow-soft flex items-center gap-2 ${isSaving ? 'opacity-70 cursor-not-allowed' : 'hover:bg-impch-accent-hover'}`}
+                                className={`bg-slate-900 text-white px-10 py-4 rounded-2xl text-sm font-black uppercase tracking-widest transition-all shadow-soft flex items-center gap-3 ${isSaving ? 'opacity-70 cursor-not-allowed' : 'hover:bg-black hover:-translate-y-0.5'}`}
                             >
                                 {isSaving ? (
                                     <>
                                         <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                                        Publicando...
+                                        Procesando...
                                     </>
                                 ) : (
-                                    "Publicar Noticia"
+                                    "Publicar Ahora"
                                 )}
                             </button>
                         </div>

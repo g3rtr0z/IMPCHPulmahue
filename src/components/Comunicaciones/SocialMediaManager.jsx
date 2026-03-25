@@ -54,7 +54,7 @@ export default function SocialMediaManager() {
     };
 
     return (
-        <div className="bg-white rounded-3xl shadow-sm ring-1 ring-slate-200/50 p-6 md:p-8 max-w-2xl mx-auto">
+        <div className="bg-white rounded-3xl shadow-sm ring-1 ring-slate-200/50 p-6 md:p-8 w-full border border-slate-100">
             <div className="flex flex-col mb-8 border-b border-slate-100 pb-6">
                 <h2 className="text-2xl font-serif font-bold text-slate-900 flex items-center gap-2">
                     <LinkIcon className="w-6 h-6 text-primary" />
