@@ -34,13 +34,12 @@ export default function PastorDashboard() {
     }
   };
 
-  // Fake navigation tailored for a Pastor
+  // Navegación enfocada para el Pastor
   const navigation = [
-    { name: "Resumen Ministeral", id: "resumen", icon: BookHeart },
+    { name: "Resumen Ministerial", id: "resumen", icon: BookHeart },
+    { name: "Solicitudes de Ingreso", id: "peticiones", icon: UserPlus },
     { name: "Directorio de Miembros", id: "miembros", icon: Users },
     { name: "Calendario de Cultos", id: "calendario", icon: Calendar },
-    { name: "Nuevos Contactos", id: "peticiones", icon: UserPlus },
-    { name: "Mensajes Pastorales", id: "mensajes", icon: MessageSquare },
   ];
 
   const renderContent = () => {

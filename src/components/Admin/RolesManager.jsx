@@ -17,8 +17,12 @@ export default function RolesManager() {
   // Form state
   const [roleName, setRoleName] = useState("");
   const [permissions, setPermissions] = useState({
+    dashboard: false,
     viewMembers: false,
     createEvents: false,
+    peticiones: false,
+    redes: false,
+    calendario: false,
     editUsers: false,
     manageSystem: false,
   });
@@ -38,17 +42,17 @@ export default function RolesManager() {
         {
           id: "admin",
           nombre: "Administrador",
-          permisos: ["viewMembers", "createEvents", "editUsers", "manageSystem"],
+          permisos: ["viewMembers", "createEvents", "peticiones", "calendario", "editUsers", "manageSystem"],
         },
         {
           id: "pastor",
           nombre: "Pastor",
-          permisos: ["viewMembers", "createEvents"],
+          permisos: ["viewMembers", "peticiones", "calendario"],
         },
         {
           id: "comunicaciones",
           nombre: "Comunicaciones",
-          permisos: ["createEvents"],
+          permisos: ["createEvents", "redes"],
         },
         { id: "user", nombre: "Usuario Base", permisos: [] },
       ];
@@ -123,6 +127,9 @@ export default function RolesManager() {
     setPermissions({
       viewMembers: false,
       createEvents: false,
+      peticiones: false,
+      redes: false,
+      calendario: false,
       editUsers: false,
       manageSystem: false,
     });
@@ -135,8 +142,12 @@ export default function RolesManager() {
 
     const rolePerms = role.permisos || [];
     setPermissions({
+      dashboard: rolePerms.includes("dashboard"),
       viewMembers: rolePerms.includes("viewMembers"),
       createEvents: rolePerms.includes("createEvents"),
+      peticiones: rolePerms.includes("peticiones"),
+      redes: rolePerms.includes("redes"),
+      calendario: rolePerms.includes("calendario"),
       editUsers: rolePerms.includes("editUsers"),
       manageSystem: rolePerms.includes("manageSystem"),
     });
@@ -220,12 +231,18 @@ export default function RolesManager() {
                           {perm === "viewMembers"
                             ? "Ver Miembros"
                             : perm === "createEvents"
-                              ? "Gestionar Eventos"
-                              : perm === "editUsers"
-                                ? "Editar Usuarios"
-                                : perm === "manageSystem"
-                                  ? "Administrar Sistema"
-                                  : perm}
+                              ? "Gestionar Noticias"
+                              : perm === "peticiones"
+                                ? "Gestionar Solicitudes"
+                                : perm === "redes"
+                                  ? "Gestionar Redes Sociales"
+                                  : perm === "calendario"
+                                    ? "Gestionar Calendario"
+                                    : perm === "editUsers"
+                                      ? "Editar Usuarios"
+                                      : perm === "manageSystem"
+                                        ? "Gestionar Roles y Permisos"
+                                        : perm}
                         </span>
                       </li>
                     ))
@@ -265,7 +282,6 @@ export default function RolesManager() {
                 <input
                   type="text"
                   required
-                  disabled={editingRoleId === "admin"}
                   value={roleName}
                   onChange={(e) => setRoleName(e.target.value)}
                   className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all bg-slate-50/50 disabled:bg-slate-100 disabled:text-slate-400"
@@ -281,6 +297,22 @@ export default function RolesManager() {
                   <label className="flex items-center gap-3 cursor-pointer group">
                     <input
                       type="checkbox"
+                      checked={permissions.dashboard}
+                      onChange={(e) =>
+                        setPermissions({
+                          ...permissions,
+                          dashboard: e.target.checked,
+                        })
+                      }
+                      className="w-5 h-5 text-primary border-slate-300 rounded focus:ring-primary/30"
+                    />
+                    <span className="text-sm font-medium text-slate-700 group-hover:text-slate-900 transition-colors">
+                      Ver Resumen Ministerial (Estadísticas)
+                    </span>
+                  </label>
+                  <label className="flex items-center gap-3 cursor-pointer group">
+                    <input
+                      type="checkbox"
                       checked={permissions.viewMembers}
                       onChange={(e) =>
                         setPermissions({
@@ -288,8 +320,7 @@ export default function RolesManager() {
                           viewMembers: e.target.checked,
                         })
                       }
-                      className="w-5 h-5 text-primary border-slate-300 rounded focus:ring-primary/30 disabled:opacity-50"
-                      disabled={editingRoleId === "admin"}
+                      className="w-5 h-5 text-primary border-slate-300 rounded focus:ring-primary/30"
                     />
                     <span className="text-sm font-medium text-slate-700 group-hover:text-slate-900 transition-colors">
                       Visualizar Directorio de Miembros
@@ -305,11 +336,58 @@ export default function RolesManager() {
                           createEvents: e.target.checked,
                         })
                       }
-                      className="w-5 h-5 text-primary border-slate-300 rounded focus:ring-primary/30 disabled:opacity-50"
-                      disabled={editingRoleId === "admin"}
+                      className="w-5 h-5 text-primary border-slate-300 rounded focus:ring-primary/30"
                     />
                     <span className="text-sm font-medium text-slate-700 group-hover:text-slate-900 transition-colors">
-                      Crear y Editar Eventos
+                      Publicar y Editar Noticias
+                    </span>
+                  </label>
+                  <label className="flex items-center gap-3 cursor-pointer group">
+                    <input
+                      type="checkbox"
+                      checked={permissions.peticiones}
+                      onChange={(e) =>
+                        setPermissions({
+                          ...permissions,
+                          peticiones: e.target.checked,
+                        })
+                      }
+                      className="w-5 h-5 text-primary border-slate-300 rounded focus:ring-primary/30"
+                    />
+                    <span className="text-sm font-medium text-slate-700 group-hover:text-slate-900 transition-colors">
+                      Gestionar Solicitudes de Ingreso
+                    </span>
+                  </label>
+                  <label className="flex items-center gap-3 cursor-pointer group">
+                    <input
+                      type="checkbox"
+                      checked={permissions.redes}
+                      onChange={(e) =>
+                        setPermissions({
+                          ...permissions,
+                          redes: e.target.checked,
+                        })
+                      }
+                      className="w-5 h-5 text-primary border-slate-300 rounded focus:ring-primary/30"
+                    />
+                    <span className="text-sm font-medium text-slate-700 group-hover:text-slate-900 transition-colors">
+                      Gestionar Redes Sociales
+                    </span>
+                  </label>
+                  <label className="flex items-center gap-3 cursor-pointer group">
+                    <input
+                      type="checkbox"
+                      checked={permissions.calendario}
+                      onChange={(e) =>
+                        setPermissions({
+                          ...permissions,
+                          calendario: e.target.checked,
+                        })
+                      }
+                      className="w-5 h-5 text-primary border-slate-300 rounded focus:ring-primary/30"
+                    />
+                    <span className="text-sm font-medium text-slate-700 group-hover:text-slate-900 transition-colors">
+                      Administrar Calendario Ministerial
                     </span>
                   </label>
                   <label className="flex items-center gap-3 cursor-pointer group">
@@ -322,8 +400,7 @@ export default function RolesManager() {
                           editUsers: e.target.checked,
                         })
                       }
-                      className="w-5 h-5 text-primary border-slate-300 rounded focus:ring-primary/30 disabled:opacity-50"
-                      disabled={editingRoleId === "admin"}
+                      className="w-5 h-5 text-primary border-slate-300 rounded focus:ring-primary/30"
                     />
                     <span className="text-sm font-medium text-slate-700 group-hover:text-slate-900 transition-colors">
                       Modificar Accesos de Usuarios
@@ -339,11 +416,10 @@ export default function RolesManager() {
                           manageSystem: e.target.checked,
                         })
                       }
-                      className="w-5 h-5 text-primary border-slate-300 rounded focus:ring-primary/30 disabled:opacity-50"
-                      disabled={editingRoleId === "admin"}
+                      className="w-5 h-5 text-primary border-slate-300 rounded focus:ring-primary/30"
                     />
                     <span className="text-sm font-medium text-slate-700 group-hover:text-slate-900 transition-colors">
-                      Administración Total del Sistema
+                      Gestionar Roles y Permisos (Control Total)
                     </span>
                   </label>
                 </div>

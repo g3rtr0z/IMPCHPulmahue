@@ -11,7 +11,10 @@ export const firebaseConfig = {
     appId: "1:448998154501:web:104f67386a6941bf1d176c"
 };
 
+import { getStorage } from "firebase/storage";
+
 // Initialize Firebase only if it hasn't been initialized already
 const app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 export const auth = getAuth(app);
+export const storage = getStorage(app);

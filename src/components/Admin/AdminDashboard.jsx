@@ -1,8 +1,13 @@
 import React, { useState } from "react";
-import Sidebar from "./Layout/Sidebar";
+import AdminSidebar from "./Layout/Sidebar";
 import DashboardStats from "./DashboardStats";
 import UsersManager from "./UsersManager";
 import RolesManager from "./RolesManager";
+import NewsManager from "../Comunicaciones/NewsManager";
+import MembersManager from "../Pastor/MembersManager";
+import PrayerRequestsManager from "../Pastor/PrayerRequestsManager";
+import CalendarManager from "../Pastor/CalendarManager";
+import SocialMediaManager from "../Comunicaciones/SocialMediaManager";
 import RoleBadge from "../shared/RoleBadge";
 import { Menu, Bell } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
@@ -10,43 +15,37 @@ import { useAuth } from "../../context/AuthContext";
 export default function AdminDashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("dashboard");
-  const { currentUser, userRole } = useAuth();
+  const { currentUser, userRole, isAdmin } = useAuth();
 
-  // Mapping activeTab to the corresponding component
+  // Mapeo dinámico de contenidos para un panel unificado
   const renderContent = () => {
     switch (activeTab) {
       case "dashboard":
         return <DashboardStats />;
-      case "usuarios":
+      case "editUsers":
         return <UsersManager />;
-      case "roles":
+      case "manageSystem":
         return <RolesManager />;
+      case "createEvents":
+        return <NewsManager />;
+      case "redes":
+        return <SocialMediaManager />;
+      case "viewMembers":
+        return <MembersManager />;
+      case "peticiones":
+        return <PrayerRequestsManager />;
+      case "calendario":
+        return <CalendarManager />;
       default:
-        // Placeholder for tabs not yet implemented
         return (
-          <div className="flexflex-col items-center justify-center min-h-[400px] bg-white rounded-3xl shadow-sm ring-1 ring-slate-200/50 p-12 text-center border-dashed border-2 border-slate-100">
+          <div className="flex flex-col items-center justify-center min-h-[400px] bg-white rounded-3xl shadow-sm ring-1 ring-slate-200/50 p-12 text-center border-dashed border-2 border-slate-100">
             <div className="w-16 h-16 bg-slate-50 text-slate-300 rounded-2xl flex items-center justify-center mx-auto mb-4">
-              <svg
-                className="w-8 h-8"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"
-                />
+              <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
               </svg>
             </div>
-            <h3 className="text-xl font-serif font-bold text-slate-900 mb-2">
-              Módulo en Desarrollo
-            </h3>
-            <p className="text-slate-500 max-w-sm mx-auto">
-              La sección que estás intentando ver "{activeTab}" estará
-              disponible en próximas versiones del sistema.
-            </p>
+            <h3 className="text-xl font-serif font-bold text-slate-900 mb-2">Módulo en Desarrollo</h3>
+            <p className="text-slate-500 max-w-sm mx-auto">La sección "{activeTab}" estará disponible pronto.</p>
           </div>
         );
     }
@@ -54,8 +53,7 @@ export default function AdminDashboard() {
 
   return (
     <div className="flex h-screen bg-slate-50 font-sans overflow-hidden">
-      {/* Sidebar component handles both mobile overlay and desktop sidebar */}
-      <Sidebar
+      <AdminSidebar
         activeTab={activeTab}
         setActiveTab={setActiveTab}
         sidebarOpen={sidebarOpen}

@@ -10,16 +10,20 @@ import {
     orderBy,
     serverTimestamp,
 } from 'firebase/firestore';
-import { db } from '../../firebase';
+import { storage, db } from '../../firebase';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { useAuth } from '../../context/AuthContext';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Upload, X } from 'lucide-react';
 
 export default function News() {
     const { currentUser, isComms } = useAuth();
     const [news, setNews] = useState([]);
     const [showForm, setShowForm] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
-    const [newPost, setNewPost] = useState({ titulo: '', resumen: '', contenido: '', imagen: '', autor: 'Comunicaciones' });
+    const [isUploading, setIsUploading] = useState(false);
+    const [imageFile, setImageFile] = useState(null);
+    const [imagePreview, setImagePreview] = useState(null);
+    const [newPost, setNewPost] = useState({ titulo: '', resumen: '', contenido: '', autor: 'Comunicaciones' });
     const navigate = useNavigate();
     const carouselRef = useRef(null);
 
@@ -41,24 +45,49 @@ export default function News() {
         return () => unsubscribe();
     }, []);
 
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setImageFile(file);
+            setImagePreview(URL.createObjectURL(file));
+        }
+    };
+
     const handleCreate = async (e) => {
         e.preventDefault();
         if (!isComms) return;
-        if (!newPost.titulo || !newPost.resumen) return;
+        if (!newPost.titulo || !newPost.resumen || !imageFile) {
+            alert("Por favor completa todos los campos y selecciona una imagen.");
+            return;
+        }
+
+        setIsUploading(true);
 
         try {
+            // 1. Upload Image to Storage
+            const storageRef = ref(storage, `noticias/${Date.now()}_${imageFile.name}`);
+            const uploadResult = await uploadBytes(storageRef, imageFile);
+            const downloadURL = await getDownloadURL(uploadResult.ref);
+
+            // 2. Save News to Firestore
             const post = {
                 ...newPost,
+                imagen: downloadURL,
                 fecha_display: new Date().toLocaleDateString('es-CL'),
-                createdAt: serverTimestamp(),
-                imagen: newPost.imagen || 'https://images.unsplash.com/photo-1490122417551-6ee9691429d0?w=800&h=500&fit=crop'
+                createdAt: serverTimestamp()
             };
 
             await addDoc(collection(db, 'noticias'), post);
-            setNewPost({ titulo: '', resumen: '', contenido: '', imagen: '', autor: 'Comunicaciones' });
+
+            // 3. Reset State
+            setNewPost({ titulo: '', resumen: '', contenido: '', autor: 'Comunicaciones' });
+            setImageFile(null);
+            setImagePreview(null);
             setShowForm(false);
         } catch (error) {
-            alert("Error al guardar en Firebase: " + error.message);
+            alert("Error al guardar noticia: " + error.message);
+        } finally {
+            setIsUploading(false);
         }
     };
 
@@ -68,7 +97,7 @@ export default function News() {
             try {
                 await deleteDoc(doc(db, 'noticias', id));
             } catch (error) {
-                alert("Error al eliminar de Firebase: " + error.message);
+                alert("Error al eliminar noticia: " + error.message);
             }
         }
     };
@@ -76,7 +105,6 @@ export default function News() {
     const scroll = (direction) => {
         if (carouselRef.current) {
             const { current } = carouselRef;
-            // Scroll exactly the width of the container (1 full slide)
             const scrollAmount = direction === 'left' ? -current.offsetWidth : current.offsetWidth;
             current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
         }
@@ -90,7 +118,7 @@ export default function News() {
                         <span className="text-xs font-semibold tracking-widest text-slate-400 uppercase mb-4 block">
                             Actualidad
                         </span>
-                        <h2 className="font-sans font-bold text-slate-900 mb-4 text-3xl md:text-4xl tracking-tight">
+                        <h2 className="font-sans font-bold text-slate-900 mb-4 text-3xl md:text-4xl tracking-tight leading-tight">
                             Últimas Noticias
                         </h2>
                         <p className="text-slate-500 text-lg max-w-2xl leading-relaxed mb-0">
@@ -102,133 +130,155 @@ export default function News() {
                         {isComms && (
                             <button
                                 onClick={() => setShowForm(!showForm)}
-                                className="bg-slate-900 text-white px-6 py-2.5 text-sm font-semibold hover:bg-slate-800 transition-colors duration-300"
+                                className="bg-slate-900 text-white px-8 py-3 text-sm font-bold tracking-wide hover:bg-slate-800 transition-all duration-300"
                             >
                                 {showForm ? 'Cancelar' : 'Nueva Noticia'}
                             </button>
-                        )}
-                        {!isLoading && news.length > 1 && (
-                            <div className="hidden md:flex gap-2 ml-4">
-                                <button onClick={() => scroll('left')} className="w-10 h-10 border border-slate-200 bg-white flex items-center justify-center text-slate-500 hover:text-slate-900 hover:border-slate-400 transition-colors duration-300" aria-label="Anterior">
-                                    <ChevronLeft className="w-5 h-5" />
-                                </button>
-                                <button onClick={() => scroll('right')} className="w-10 h-10 border border-slate-200 bg-white flex items-center justify-center text-slate-500 hover:text-slate-900 hover:border-slate-400 transition-colors duration-300" aria-label="Siguiente">
-                                    <ChevronRight className="w-5 h-5" />
-                                </button>
-                            </div>
                         )}
                     </div>
                 </div>
 
                 {/* --- FORM SECTION --- */}
                 {isComms && showForm && (
-                    <div className="mb-16 p-8 md:p-10 bg-slate-50 border border-slate-200">
+                    <div className="mb-20 p-10 bg-slate-50 border border-slate-200 rounded-2xl shadow-sm">
                         <h3 className="text-2xl font-sans font-bold mb-8 text-slate-900">Redactar Noticia</h3>
-                        <form onSubmit={handleCreate} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <form onSubmit={handleCreate} className="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <div className="md:col-span-2">
-                                <label className="block text-[10px] font-bold uppercase tracking-[0.2em] mb-2 text-slate-500">Título</label>
-                                <input type="text" value={newPost.titulo} onChange={(e) => setNewPost({ ...newPost, titulo: e.target.value })} className="w-full px-5 py-3.5 border border-slate-200 focus:outline-none focus:border-slate-400 bg-white text-sm font-medium transition-all" placeholder="Ej: Gran Servicio de Acción de Gracias" required />
-                            </div>
-                            <div className="md:col-span-2">
-                                <label className="block text-[10px] font-bold uppercase tracking-[0.2em] mb-2 text-slate-500">Breve Resumen</label>
-                                <input type="text" value={newPost.resumen} onChange={(e) => setNewPost({ ...newPost, resumen: e.target.value })} className="w-full px-5 py-3.5 border border-slate-200 focus:outline-none focus:border-slate-400 bg-white text-sm font-medium transition-all" placeholder="Aparecerá en la vista previa..." required />
+                                <label className="block text-[10px] font-bold uppercase tracking-[0.2em] mb-3 text-slate-500">Título de la Noticia</label>
+                                <input type="text" value={newPost.titulo} onChange={(e) => setNewPost({ ...newPost, titulo: e.target.value })} className="w-full px-6 py-4 border border-slate-200 focus:outline-none focus:border-slate-400 rounded-xl bg-white text-sm font-medium transition-all" required />
                             </div>
                             <div className="md:col-span-2">
-                                <label className="block text-[10px] font-bold uppercase tracking-[0.2em] mb-2 text-slate-500">Contenido Completo</label>
-                                <textarea value={newPost.contenido} onChange={(e) => setNewPost({ ...newPost, contenido: e.target.value })} className="w-full px-5 py-3.5 border border-slate-200 focus:outline-none focus:border-slate-400 bg-white text-sm min-h-[160px] font-medium transition-all" placeholder="Detalla la noticia aquí..." required />
+                                <label className="block text-[10px] font-bold uppercase tracking-[0.2em] mb-3 text-slate-500">Breve Resumen</label>
+                                <input type="text" value={newPost.resumen} onChange={(e) => setNewPost({ ...newPost, resumen: e.target.value })} className="w-full px-6 py-4 border border-slate-200 focus:outline-none focus:border-slate-400 rounded-xl bg-white text-sm font-medium transition-all" required />
                             </div>
-                            <div className="col-span-1">
-                                <label className="block text-[10px] font-bold uppercase tracking-[0.2em] mb-2 text-slate-500">URL Imagen (Unsplash)</label>
-                                <input type="url" value={newPost.imagen} onChange={(e) => setNewPost({ ...newPost, imagen: e.target.value })} className="w-full px-5 py-3.5 border border-slate-200 focus:outline-none focus:border-slate-400 bg-white text-sm font-medium transition-all" placeholder="https://images.unsplash.com/..." />
+                            <div className="md:col-span-2">
+                                <label className="block text-[10px] font-bold uppercase tracking-[0.2em] mb-3 text-slate-500">Contenido del Artículo</label>
+                                <textarea value={newPost.contenido} onChange={(e) => setNewPost({ ...newPost, contenido: e.target.value })} className="w-full px-6 py-4 border border-slate-200 focus:outline-none focus:border-slate-400 rounded-xl bg-white text-sm min-h-[180px] font-medium transition-all" required />
                             </div>
-                            <div className="col-span-1">
-                                <label className="block text-[10px] font-bold uppercase tracking-[0.2em] mb-2 text-slate-500">Autor / Departamento</label>
-                                <input type="text" value={newPost.autor} onChange={(e) => setNewPost({ ...newPost, autor: e.target.value })} className="w-full px-5 py-3.5 border border-slate-200 focus:outline-none focus:border-slate-400 bg-white text-sm font-medium transition-all" />
+
+                            <div className="md:col-span-1">
+                                <label className="block text-[10px] font-bold uppercase tracking-[0.2em] mb-3 text-slate-500">Imagen Portada</label>
+                                <div className="relative">
+                                    <input
+                                        type="file"
+                                        id="img-upload"
+                                        accept="image/*"
+                                        onChange={handleFileChange}
+                                        className="hidden"
+                                    />
+                                    <label
+                                        htmlFor="img-upload"
+                                        className="flex items-center justify-center gap-3 w-full px-6 py-4 border-2 border-dashed border-slate-200 hover:border-slate-400 rounded-xl bg-white cursor-pointer transition-all"
+                                    >
+                                        <Upload className="w-4 h-4 text-slate-400" />
+                                        <span className="text-sm font-medium text-slate-600">
+                                            {imageFile ? imageFile.name : 'Subir desde dispositivo'}
+                                        </span>
+                                    </label>
+                                </div>
                             </div>
-                            <div className="md:col-span-2 flex justify-end mt-4">
-                                <button type="submit" className="bg-slate-900 text-white px-8 py-3.5 text-sm font-bold tracking-wide hover:bg-slate-800 transition-colors duration-300">
-                                    Publicar Noticia
+
+                            <div className="md:col-span-1 flex flex-col justify-end">
+                                <label className="block text-[10px] font-bold uppercase tracking-[0.2em] mb-3 text-slate-500">Autor / Departamento</label>
+                                <input type="text" value={newPost.autor} onChange={(e) => setNewPost({ ...newPost, autor: e.target.value })} className="w-full px-6 py-4 border border-slate-200 focus:outline-none focus:border-slate-400 rounded-xl bg-white text-sm font-medium transition-all" />
+                            </div>
+
+                            {imagePreview && (
+                                <div className="md:col-span-2 mt-2">
+                                    <div className="relative w-40 h-24 rounded-lg overflow-hidden border border-slate-200">
+                                        <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
+                                        <button
+                                            type="button"
+                                            onClick={() => { setImageFile(null); setImagePreview(null); }}
+                                            className="absolute top-1 right-1 bg-white p-1 rounded-full shadow-md text-rose-500"
+                                        >
+                                            <X className="w-3 h-3" />
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
+
+                            <div className="md:col-span-2 flex justify-end mt-6">
+                                <button
+                                    type="submit"
+                                    disabled={isUploading}
+                                    className={`bg-slate-900 text-white px-10 py-4 text-sm font-bold tracking-widest uppercase hover:bg-slate-800 transition-all rounded-xl flex items-center gap-3 ${isUploading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                >
+                                    {isUploading ? (
+                                        <>
+                                            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                                            Publicando...
+                                        </>
+                                    ) : (
+                                        'Publicar Noticia'
+                                    )}
                                 </button>
                             </div>
                         </form>
                     </div>
                 )}
 
-                {/* --- CAROUSEL --- */}
+                {/* --- MINIMALIST NEWS GRID --- */}
                 {isLoading ? (
                     <div className="flex justify-center py-20">
-                        <div className="w-10 h-10 border-2 border-slate-900 border-t-transparent rounded-full animate-spin"></div>
+                        <div className="w-8 h-8 border-2 border-slate-200 border-t-slate-900 rounded-full animate-spin"></div>
                     </div>
                 ) : (
-                    <div className="relative w-full">
-                        {/* Custom scrollbars hidden via inline style */}
-                        <div
-                            ref={carouselRef}
-                            className="flex overflow-x-auto gap-8 pb-10 snap-x snap-mandatory flex-nowrap w-full"
-                            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-                        >
-                            <style dangerouslySetInnerHTML={{ __html: `\n::-webkit-scrollbar { display: none; }\n` }} />
-
-                            {news.map((item, index) => {
-                                return (
-                                    <article key={item.id} className="snap-center shrink-0 w-full flex flex-col md:flex-row bg-white border border-slate-200 relative hover:shadow-md transition-shadow duration-300 min-h-[420px]">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16">
+                        {news.length > 0 ? (
+                            news.map((item) => (
+                                <article
+                                    key={item.id}
+                                    className="group flex flex-col cursor-pointer"
+                                    onClick={() => navigate(`/noticia/${item.id}`)}
+                                >
+                                    <div className="relative aspect-[16/10] overflow-hidden rounded-2xl bg-slate-50 mb-6 group-hover:shadow-lg transition-all duration-500">
                                         {isComms && (
                                             <button
-                                                onClick={() => handleDelete(item.id)}
-                                                className="absolute top-4 right-4 z-20 bg-white text-rose-500 w-10 h-10 flex items-center justify-center hover:bg-rose-50 border border-slate-200 transition-colors duration-300 shadow-sm"
-                                                title="Eliminar Noticia"
+                                                onClick={(e) => { e.stopPropagation(); handleDelete(item.id); }}
+                                                className="absolute top-4 right-4 z-30 bg-white/80 backdrop-blur-sm text-slate-400 w-8 h-8 flex items-center justify-center hover:text-rose-500 transition-all rounded-full border border-slate-100"
                                             >
-                                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12" /></svg>
+                                                <X className="w-4 h-4" />
                                             </button>
                                         )}
-                                        <div className="w-full md:w-[45%] aspect-[16/10] md:aspect-auto overflow-hidden relative border-b md:border-b-0 md:border-r border-slate-200">
-                                            <img
-                                                src={item.imagen}
-                                                alt={item.titulo}
-                                                className="absolute inset-0 w-full h-full object-cover"
-                                            />
-                                            {index === 0 && (
-                                                <div className="absolute top-6 left-6 bg-white text-slate-900 text-[10px] font-bold uppercase tracking-[0.2em] px-4 py-2 hidden md:block border border-slate-200 shadow-sm">
-                                                    Lo Último
-                                                </div>
-                                            )}
+                                        <img
+                                            src={item.imagen}
+                                            alt={item.titulo}
+                                            className="absolute inset-0 w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-700 group-hover:scale-105"
+                                        />
+                                        <div className="absolute bottom-4 left-4">
+                                            <span className="bg-white/90 backdrop-blur-md text-[9px] font-bold uppercase tracking-[0.15em] px-3 py-1.5 rounded-lg text-slate-900 border border-slate-100">
+                                                {item.autor}
+                                            </span>
                                         </div>
-                                        <div className="w-full md:w-[55%] p-8 md:p-12 flex flex-col flex-grow justify-center bg-white">
-                                            <div className="flex items-center gap-3 mb-6 text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">
-                                                <span>{item.autor}</span>
-                                                <span className="text-slate-300">•</span>
-                                                <span>{item.fecha_display}</span>
-                                            </div>
-                                            <h3 className="text-2xl md:text-3xl font-sans font-bold text-slate-900 mb-6 leading-[1.2] line-clamp-3 hover:text-slate-600 transition-colors">
-                                                {item.titulo}
-                                            </h3>
-                                            <p className="text-slate-500 text-base md:text-lg line-clamp-3 mb-8 leading-relaxed flex-grow">
-                                                {item.resumen}
-                                            </p>
-                                            <div className="mt-auto pt-6 border-t border-slate-100 flex items-center justify-start">
-                                                <button
-                                                    onClick={() => navigate(`/noticia/${item.id}`)}
-                                                    className="inline-flex items-center gap-3 text-slate-900 font-bold hover:text-slate-500 transition-colors border-0 bg-transparent p-0 text-sm tracking-wide"
-                                                >
-                                                    Leer artículo completo
-                                                    <ChevronRight className="w-4 h-4 text-slate-400" />
-                                                </button>
-                                            </div>
+                                    </div>
+
+                                    <div className="flex flex-col flex-grow">
+                                        <div className="flex items-center gap-2 mb-3">
+                                            <span className="text-[10px] font-bold text-slate-300 uppercase tracking-widest">
+                                                {item.fecha_display}
+                                            </span>
                                         </div>
-                                    </article>
-                                );
-                            })}
-                            {news.length === 0 && (
-                                <div className="w-full py-24 text-center">
-                                    <span className="inline-block p-4 bg-slate-50 border border-slate-200 text-slate-400 mb-4">
-                                        <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                                        </svg>
-                                    </span>
-                                    <p className="text-slate-500 font-medium">No hay noticias publicadas por el momento.</p>
-                                </div>
-                            )}
-                        </div>
+                                        <h3 className="text-xl font-sans font-bold text-slate-900 mb-3 leading-snug group-hover:text-primary transition-colors duration-300">
+                                            {item.titulo}
+                                        </h3>
+                                        <p className="text-slate-500 text-sm line-clamp-2 leading-relaxed mb-6 font-medium">
+                                            {item.resumen}
+                                        </p>
+                                        <div className="mt-auto">
+                                            <span className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.2em] text-slate-900 group-hover:text-primary transition-colors duration-300">
+                                                Leer más
+                                                <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                                            </span>
+                                        </div>
+                                    </div>
+                                </article>
+                            )
+                            )) : (
+                            <div className="col-span-full py-20 text-center border border-dashed border-slate-100 rounded-3xl">
+                                <p className="text-slate-400 text-sm font-medium tracking-wide">No se encontraron noticias publicadas.</p>
+                            </div>
+                        )}
                     </div>
                 )}
             </div>

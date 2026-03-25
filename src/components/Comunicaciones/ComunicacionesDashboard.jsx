@@ -31,27 +31,23 @@ export default function ComunicacionesDashboard() {
 
     const navigation = [
         { name: "Gestión de Noticias", id: "noticias", icon: Newspaper },
-        { name: "Redes Sociales", id: "redes", icon: Radio },
     ];
 
     const renderContent = () => {
         switch (activeTab) {
             case "noticias":
                 return <NewsManager />;
-            case "redes":
-                return <SocialMediaManager />;
             default:
-                // Placeholder hasta que se creen los componentes reales de Comunicaciones
                 return (
                     <div className="bg-white rounded-2xl shadow-card p-12 flex flex-col items-center justify-center min-h-[400px] text-center border-dashed border-2 border-slate-200">
                         <div className="w-16 h-16 bg-impch-primary/5 text-impch-primary rounded-2xl flex items-center justify-center mb-4">
                             <Megaphone className="w-8 h-8" />
                         </div>
                         <h3 className="text-xl font-serif font-bold text-impch-dark-panel">
-                            Módulo de Comunicaciones
+                            Panel de Comunicaciones
                         </h3>
                         <p className="text-slate-500 max-w-sm mt-2">
-                            Esta sección está en desarrollo. Muy pronto disponeremos de las herramientas para gestionar el contenido y difusión de nuestra iglesia.
+                            Gestiona el contenido y difusión de nuestra iglesia desde aquí.
                         </p>
                     </div>
                 );

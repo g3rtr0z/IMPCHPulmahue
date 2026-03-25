@@ -1,4 +1,3 @@
-import React from "react";
 import {
   LayoutDashboard,
   UserCog,
@@ -6,14 +5,14 @@ import {
   BookOpen,
   LogOut,
   X,
+  Newspaper,
+  Users,
+  UserPlus,
+  Calendar,
+  Share2
 } from "lucide-react";
 import { useAuth } from "../../../context/AuthContext";
-
-const navigation = [
-  { name: "Dashboard", id: "dashboard", icon: LayoutDashboard },
-  { name: "Usuarios", id: "usuarios", icon: UserCog },
-  { name: "Roles y Permisos", id: "roles", icon: ShieldCheck },
-];
+import { useRoleInfo } from "../../../hooks/useRoleInfo";
 
 export default function Sidebar({
   activeTab,
@@ -21,7 +20,31 @@ export default function Sidebar({
   sidebarOpen,
   setSidebarOpen,
 }) {
-  const { logout } = useAuth();
+  const { logout, userRole } = useAuth();
+
+  // Obtenemos los permisos crudos de la base de datos para el Sidebar
+  const { rawPermissions: userPermsRaw } = useRoleInfo(userRole);
+
+  // Definimos la navegación asociada a cada etiqueta de permiso
+  const allNavigation = [
+    { name: "Resumen Ministerial", id: "dashboard", icon: LayoutDashboard, perm: "dashboard" },
+    { name: "Solicitudes de Ingreso", id: "peticiones", icon: UserPlus, perm: "peticiones" },
+    { name: "Directorio de Miembros", id: "viewMembers", icon: Users, perm: "viewMembers" },
+    { name: "Calendario de Cultos", id: "calendario", icon: Calendar, perm: "calendario" },
+    { name: "Gestión de Noticias", id: "createEvents", icon: Newspaper, perm: "createEvents" },
+    { name: "Redes Sociales", id: "redes", icon: Share2, perm: "redes" },
+    { name: "Control de Usuarios", id: "editUsers", icon: UserCog, perm: "editUsers" },
+    { name: "Roles y Permisos", id: "manageSystem", icon: ShieldCheck, perm: "manageSystem" },
+  ];
+
+  // Filtramos: El admin siempre ve roles. Los demás ven según sus permisos técnicos.
+  const navigation = allNavigation.filter(item => {
+    if (item.perm === "ALWAYS") return true;
+    if (userRole === 'admin' && item.id === 'roles') return true;
+
+    // Obtenemos los permisos crudos (sin traducir a etiquetas) para el Sidebar
+    return userPermsRaw.includes(item.id);
+  });
 
   const handleLogout = async () => {
     try {
