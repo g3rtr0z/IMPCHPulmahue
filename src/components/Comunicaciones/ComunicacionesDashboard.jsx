@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import NewsManager from "./NewsManager";
 import SocialMediaManager from "./SocialMediaManager";
+import RoleBadge from "../shared/RoleBadge";
 
 export default function ComunicacionesDashboard() {
     const { currentUser, logout } = useAuth();
@@ -140,6 +141,7 @@ export default function ComunicacionesDashboard() {
                     </button>
 
                     <div className="flex flex-1 items-center justify-end gap-x-6">
+                        <RoleBadge roleId="comunicaciones" />
                         <button className="text-slate-400 hover:text-slate-500 relative group transition-colors">
                             <Bell className="h-6 w-6" />
                             <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full border border-white group-hover:bg-red-600"></span>

@@ -17,6 +17,7 @@ import MembersManager from "./MembersManager";
 import PrayerRequestsManager from "./PrayerRequestsManager";
 import PastorDashboardStats from "./PastorDashboardStats";
 import CalendarManager from "./CalendarManager";
+import RoleBadge from "../shared/RoleBadge";
 
 export default function PastorDashboard() {
   const { currentUser, logout } = useAuth();
@@ -153,6 +154,7 @@ export default function PastorDashboard() {
           </button>
 
           <div className="flex flex-1 items-center justify-end gap-x-6">
+            <RoleBadge roleId="pastor" />
             <button className="text-slate-400 hover:text-slate-500 relative">
               <Bell className="h-6 w-6" />
               <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>

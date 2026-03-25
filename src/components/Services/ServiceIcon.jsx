@@ -27,7 +27,7 @@ const icons = {
 
 export default function ServiceIcon({ name }) {
   return (
-    <span className="inline-flex items-center justify-center w-12 h-12 text-primary mb-4">
+    <span className="inline-flex items-center justify-center">
       {icons[name] || icons.calendar}
     </span>
   );

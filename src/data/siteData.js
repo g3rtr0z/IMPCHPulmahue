@@ -28,50 +28,73 @@ export const servicios = [
 
 export const ministerios = [
   {
-    titulo: 'Jóvenes',
-    descripcion: 'Inspirando a la próxima generación a seguir a Cristo con pasión.',
-    imagen: 'https://images.unsplash.com/photo-1529070538774-1843cb3265df?w=600&h=400&fit=crop',
+    titulo: 'Dorcas',
+    subtitulo: 'Departamento de Mujeres',
+    descripcion: 'Mujeres comprometidas con la oración, el servicio y el apoyo mutuo dentro de la congregación y la comunidad, siguiendo el ejemplo de fidelidad y generosidad de la Biblia.',
+    imagen: 'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=700&h=500&fit=crop',
     detalle: {
-      lider: 'Pastor de Jóvenes',
-      horario: 'Sábados 18:00 PM',
-      miembros: '30+ jóvenes',
-      actividades: ['Campamentos anuales', 'Estudios bíblicos semanales', 'Grupos de alabanza', 'Retiros espirituales', 'Servicio comunitario'],
+      lider: 'Directora de Dorcas',
+      horario: 'Reuniones semanales',
+      miembros: 'Hermanas de la congregación',
     },
   },
   {
-    titulo: 'Música y Alabanza',
-    descripcion: 'Liderando a la congregación al trono de Dios a través de las artes.',
-    imagen: 'https://images.unsplash.com/photo-1510915361894-db8b60106cb1?w=600&h=400&fit=crop',
+    titulo: 'Voluntarios',
+    subtitulo: 'Departamento de Hombres',
+    descripcion: 'Hombres al servicio de la iglesia y la comunidad, comprometidos con el trabajo, la integridad y el liderazgo familiar fundamentado en los valores del evangelio.',
+    imagen: 'https://images.unsplash.com/photo-1544027993-37dbfe43562a?w=700&h=500&fit=crop',
     detalle: {
-      lider: 'Director de Alabanza',
-      horario: 'Ensayos Viernes 18:00 PM',
-      miembros: '15+ músicos',
-      actividades: ['Servicio dominical', 'Noches de alabanza', 'Grabaciones de música', 'Conferencias de adoración'],
+      lider: 'Director de Hombres',
+      horario: 'Reuniones periódicas',
+      miembros: 'Hermanos de la congregación',
+    },
+  },
+  {
+    titulo: 'Coro Instrumental',
+    subtitulo: 'Ministerio de Música y Alabanza',
+    descripcion: 'Músicos y cantores consagrados que lideran la adoración congregacional, ofreciendo sus talentos al servicio de Dios en cada culto y evento especial de la iglesia.',
+    imagen: 'https://images.unsplash.com/photo-1510915361894-db8b60106cb1?w=700&h=500&fit=crop',
+    detalle: {
+      lider: 'Director Musical',
+      horario: 'Ensayos y cultos dominicales',
+      miembros: 'Músicos y cantores',
+    },
+  },
+  {
+    titulo: 'Oficiales',
+    subtitulo: 'Cuerpo de Liderazgo',
+    descripcion: 'Líderes ordenados que apoyan la visión pastoral, el orden congregacional y el cuidado espiritual de los miembros, sirviendo como columna de la estructura eclesial.',
+    imagen: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=700&h=500&fit=crop',
+    detalle: {
+      lider: 'Pastor Principal',
+      horario: 'Según agenda ministerial',
+      miembros: 'Diáconos y líderes',
+    },
+  },
+  {
+    titulo: 'Jóvenes',
+    subtitulo: 'Sociedad de Jóvenes',
+    descripcion: 'La próxima generación reunida en torno a la fe, la comunidad y el propósito. Jóvenes que viven el evangelio activamente a través del compañerismo, el estudio y la misión.',
+    imagen: 'https://images.unsplash.com/photo-1529070538774-1843cb3265df?w=700&h=500&fit=crop',
+    detalle: {
+      lider: 'Presidente de Jóvenes',
+      horario: 'Sábados 18:00 hrs',
+      miembros: 'Jóvenes de la congregación',
     },
   },
   {
     titulo: 'Niños',
-    descripcion: 'Sembrando la palabra de Dios en corazones pequeños pero valientes.',
-    imagen: 'https://images.unsplash.com/photo-1503454533935-03242a70b3b2?w=600&h=400&fit=crop',
+    subtitulo: 'Ministerio Infantil',
+    descripcion: 'Sembrando la palabra de Dios en corazones pequeños pero valientes. Un espacio seguro, alegre y formativo donde los niños aprenden a conocer y amar a Jesús.',
+    imagen: 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=700&h=500&fit=crop',
     detalle: {
       lider: 'Directora de Niños',
-      horario: 'Domingos 11:00 AM',
-      miembros: '40+ niños',
-      actividades: ['Escuela dominical', 'Manualidades bíblicas', 'Teatro cristiano', 'Campamento de verano'],
-    },
-  },
-  {
-    titulo: 'Acción Social',
-    descripcion: 'Siendo las manos y pies de Jesús en nuestra comunidad local.',
-    imagen: 'https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=600&h=400&fit=crop',
-    detalle: {
-      lider: 'Coordinador Social',
-      horario: 'Primer sábado del mes',
-      miembros: '20+ voluntarios',
-      actividades: ['Ollas comunes', 'Visitas hospitalarias', 'Apoyo escolar', 'Campaña de invierno'],
+      horario: 'Domingos 11:00 hrs',
+      miembros: 'Niños de la congregación',
     },
   },
 ];
+
 
 export const contactInfo = {
   direccion: 'Los Queltehues 1230, Padre las casas, Temuco',

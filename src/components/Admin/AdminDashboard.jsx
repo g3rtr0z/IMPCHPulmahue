@@ -3,6 +3,7 @@ import Sidebar from "./Layout/Sidebar";
 import DashboardStats from "./DashboardStats";
 import UsersManager from "./UsersManager";
 import RolesManager from "./RolesManager";
+import RoleBadge from "../shared/RoleBadge";
 import { Menu, Bell } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 
@@ -75,13 +76,14 @@ export default function AdminDashboard() {
 
           {/* Right side navbar items */}
           <div className="flex flex-1 items-center justify-end gap-x-4 lg:gap-x-6">
+            <RoleBadge roleId={userRole} />
+
             <button
               type="button"
               className="-m-2.5 p-2.5 text-slate-400 hover:text-slate-500 transition-colors relative group"
             >
               <span className="sr-only">Ver notificaciones</span>
               <Bell className="h-6 w-6" aria-hidden="true" />
-              {/* Notification badge dot */}
               <span className="absolute top-2 right-2.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white group-hover:bg-red-600 transition-colors"></span>
             </button>
 

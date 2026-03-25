@@ -33,32 +33,37 @@ export default function RolesManager() {
         rolesList.push({ id: doc.id, ...doc.data() });
       });
 
-      // If empty, add default mock structure
-      if (rolesList.length === 0) {
-        const defaultRoles = [
-          {
-            id: "admin",
-            nombre: "Administrador",
-            permisos: [
-              "viewMembers",
-              "createEvents",
-              "editUsers",
-              "manageSystem",
-            ],
-          },
-          {
-            id: "pastor",
-            nombre: "Pastor",
-            permisos: ["viewMembers", "createEvents"],
-          },
-          {
-            id: "comunicaciones",
-            nombre: "Comunicaciones",
-            permisos: ["createEvents"],
-          },
-          { id: "user", nombre: "Usuario Base", permisos: [] },
-        ];
-        setRoles(defaultRoles);
+      // Always ensure the 4 system roles exist, adding only the ones missing
+      const systemRoles = [
+        {
+          id: "admin",
+          nombre: "Administrador",
+          permisos: ["viewMembers", "createEvents", "editUsers", "manageSystem"],
+        },
+        {
+          id: "pastor",
+          nombre: "Pastor",
+          permisos: ["viewMembers", "createEvents"],
+        },
+        {
+          id: "comunicaciones",
+          nombre: "Comunicaciones",
+          permisos: ["createEvents"],
+        },
+        { id: "user", nombre: "Usuario Base", permisos: [] },
+      ];
+
+      const existingIds = new Set(rolesList.map((r) => r.id));
+      const missing = systemRoles.filter((r) => !existingIds.has(r.id));
+
+      if (missing.length > 0) {
+        await Promise.all(
+          missing.map((r) =>
+            setDoc(doc(db, "roles", r.id), { nombre: r.nombre, permisos: r.permisos })
+          )
+        );
+        // Merge missing into the list
+        setRoles([...rolesList, ...missing]);
       } else {
         setRoles(rolesList);
       }

@@ -1,26 +1,18 @@
 import React from "react";
 import {
   LayoutDashboard,
-  Users,
   UserCog,
   ShieldCheck,
   BookOpen,
-  Calendar,
-  Settings,
   LogOut,
-  Menu,
   X,
 } from "lucide-react";
 import { useAuth } from "../../../context/AuthContext";
 
 const navigation = [
   { name: "Dashboard", id: "dashboard", icon: LayoutDashboard },
-  { name: "Miembros", id: "miembros", icon: Users },
   { name: "Usuarios", id: "usuarios", icon: UserCog },
-  { name: "Roles y permisos", id: "roles", icon: ShieldCheck },
-  { name: "Departamentos", id: "departamentos", icon: BookOpen },
-  { name: "Eventos", id: "eventos", icon: Calendar },
-  { name: "Configuración", id: "configuracion", icon: Settings },
+  { name: "Roles y Permisos", id: "roles", icon: ShieldCheck },
 ];
 
 export default function Sidebar({
