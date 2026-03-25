@@ -28,6 +28,7 @@ export function useAuth() {
 export function AuthProvider({ children }) {
     const [currentUser, setCurrentUser] = useState(null);
     const [userRole, setUserRole] = useState(null);
+    const [userData, setUserData] = useState(null);
     const [loading, setLoading] = useState(true);
 
     async function login(email, password) {
@@ -48,14 +49,18 @@ export function AuthProvider({ children }) {
                 if (user) {
                     const userDoc = await getDoc(doc(db, 'users', user.uid));
                     if (userDoc.exists()) {
-                        setUserRole(userDoc.data().role);
+                        const data = userDoc.data();
+                        setUserRole(data.role || 'user');
+                        setUserData(data);
                     } else {
                         setUserRole('user');
+                        setUserData(null);
                     }
                     setCurrentUser(user);
                 } else {
                     setCurrentUser(null);
                     setUserRole(null);
+                    setUserData(null);
                 }
             } catch (error) {
                 console.error("Error in AuthProvider:", error);
@@ -71,6 +76,7 @@ export function AuthProvider({ children }) {
     const value = {
         currentUser,
         userRole,
+        userData,
         login,
         logout,
         resetPassword,

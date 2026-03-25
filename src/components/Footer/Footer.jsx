@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { contactInfo, navLinks } from '../../data/siteData';
 import { MapPin, Mail, Phone } from 'lucide-react';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, onSnapshot } from 'firebase/firestore';
 import { db } from '../../firebase';
 import { useNavigate } from 'react-router-dom';
 
@@ -151,11 +151,8 @@ export default function Footer() {
               </a>
             </div>
 
-            {/* Horario destacado */}
-            <div className="mt-2 p-4 bg-slate-800 border border-slate-700">
-              <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">Horario Principal</p>
-              <p className="text-sm text-slate-300 font-medium">Domingos · 11:00 y 18:00 hrs</p>
-            </div>
+            {/* Horarios Dinámicos */}
+            <DynamicSchedules />
           </div>
 
         </div>
@@ -174,5 +171,41 @@ export default function Footer() {
       </div>
 
     </footer>
+  );
+}
+
+// Componente para cargar y mostrar horarios dinámicamente
+function DynamicSchedules() {
+  const [schedules, setSchedules] = useState([]);
+
+  useEffect(() => {
+    // Escucha en tiempo real (Real-time updates)
+    const unsubscribe = onSnapshot(doc(db, 'config', 'schedules'), (snap) => {
+      if (snap.exists()) {
+        setSchedules(snap.data().items || []);
+      }
+    }, (error) => {
+      console.error('Error fetching real-time schedules:', error);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  if (schedules.length === 0) return null;
+
+  return (
+    <div className="mt-2 space-y-3">
+      {schedules
+        .filter(item => item.dia.toLowerCase().includes('doming'))
+        .map((item, index) => (
+          <div key={index} className="p-3 bg-slate-800/50 border border-slate-800 rounded-lg">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-1">{item.dia}</p>
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-sm text-slate-300 font-medium">{item.servicio}</span>
+              <span className="text-xs text-slate-500 bg-slate-900 px-2 py-0.5 rounded border border-slate-800">{item.hora}</span>
+            </div>
+          </div>
+        ))}
+    </div>
   );
 }

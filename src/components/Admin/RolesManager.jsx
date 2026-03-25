@@ -22,6 +22,7 @@ export default function RolesManager() {
     createEvents: false,
     peticiones: false,
     redes: false,
+    horarios: false,
     calendario: false,
     editUsers: false,
     manageSystem: false,
@@ -147,6 +148,7 @@ export default function RolesManager() {
       createEvents: rolePerms.includes("createEvents"),
       peticiones: rolePerms.includes("peticiones"),
       redes: rolePerms.includes("redes"),
+      horarios: rolePerms.includes("horarios"),
       calendario: rolePerms.includes("calendario"),
       editUsers: rolePerms.includes("editUsers"),
       manageSystem: rolePerms.includes("manageSystem"),
@@ -372,6 +374,22 @@ export default function RolesManager() {
                     />
                     <span className="text-sm font-medium text-slate-700 group-hover:text-slate-900 transition-colors">
                       Gestionar Redes Sociales
+                    </span>
+                  </label>
+                  <label className="flex items-center gap-3 cursor-pointer group">
+                    <input
+                      type="checkbox"
+                      checked={permissions.horarios}
+                      onChange={(e) =>
+                        setPermissions({
+                          ...permissions,
+                          horarios: e.target.checked,
+                        })
+                      }
+                      className="w-5 h-5 text-primary border-slate-300 rounded focus:ring-primary/30"
+                    />
+                    <span className="text-sm font-medium text-slate-700 group-hover:text-slate-900 transition-colors">
+                      Gestionar Horarios de Servicios
                     </span>
                   </label>
                   <label className="flex items-center gap-3 cursor-pointer group">

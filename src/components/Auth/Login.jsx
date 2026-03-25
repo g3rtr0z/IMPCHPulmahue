@@ -204,18 +204,11 @@ export default function Login() {
         <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-transparent pointer-events-none" />
         <div className="relative z-10 text-white">
           <div className="flex items-center gap-3 mb-6 opacity-90">
-            <svg
-              width="28"
-              height="28"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
-            </svg>
+            <img
+              src="/logo-impch.png"
+              alt="Logo IMPCH"
+              className="w-10 h-10 object-contain drop-shadow"
+            />
             <span className="font-serif font-bold text-2xl tracking-wide">
               IMPCH Pulmahue
             </span>
@@ -236,19 +229,11 @@ export default function Login() {
         <div className="max-w-md w-full mx-auto">
           {/* Mobile Header (Solo visible en móviles) */}
           <div className="lg:hidden flex items-center gap-3 mb-10 text-impch-dark-panel">
-            <svg
-              width="28"
-              height="28"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="text-impch-primary"
-            >
-              <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
-            </svg>
+            <img
+              src="/logo-impch.png"
+              alt="Logo IMPCH"
+              className="w-8 h-8 object-contain"
+            />
             <span className="font-serif font-bold text-2xl tracking-wide">
               IMPCH Pulmahue
             </span>

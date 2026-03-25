@@ -18,6 +18,12 @@ export default function NewsManager() {
     const [news, setNews] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [showForm, setShowForm] = useState(false);
+    const [isSaving, setIsSaving] = useState(false);
+
+    // Configuración de Cloudinary
+    const CLOUDINARY_CLOUD_NAME = "dzvfo7b7c";
+    const CLOUDINARY_UPLOAD_PRESET = "impchpulmahue";
+
     const [newPost, setNewPost] = useState({
         titulo: "",
         resumen: "",
@@ -25,6 +31,9 @@ export default function NewsManager() {
         imagen: "",
         autor: "Comunicaciones",
     });
+
+    const [imageFile, setImageFile] = useState(null);
+    const [imagePreview, setImagePreview] = useState(null);
 
     useEffect(() => {
         const q = query(collection(db, "noticias"), orderBy("createdAt", "desc"));
@@ -46,6 +55,55 @@ export default function NewsManager() {
         return () => unsubscribe();
     }, []);
 
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setImageFile(file);
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setImagePreview(reader.result);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
+    const uploadToCloudinary = async (file) => {
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
+
+        try {
+            console.log("Iniciando subida a Cloudinary...", { cloud: CLOUDINARY_CLOUD_NAME, preset: CLOUDINARY_UPLOAD_PRESET });
+
+            const response = await fetch(
+                `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`,
+                {
+                    method: "POST",
+                    body: formData,
+                    // Eliminamos cabeceras innecesarias para evitar problemas de CORS
+                }
+            );
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.error("Error respuesta Cloudinary:", errorData);
+                // Si el error es sobre 'unsigned', le avisamos al usuario
+                if (errorData.error.message.includes("unsigned")) {
+                    throw new Error("El preset 'impchpulmahue' debe estar configurado como UNSIGNED en tu panel de Cloudinary.");
+                }
+                throw new Error(errorData.error.message || "Error al subir a la nube");
+            }
+
+            const data = await response.json();
+            console.log("Subida exitosa:", data.secure_url);
+            return data.secure_url;
+        } catch (error) {
+            console.error("Error de conexión durante el fetch:", error);
+            if (error.message.includes("UNSIGNED")) throw error;
+            throw new Error("No se pudo conectar con Cloudinary. Por favor, asegúrate de que el preset 'impchpulmahue' sea UNSIGNED en tu panel de control.");
+        }
+    };
+
     const handleCreate = async (e) => {
         e.preventDefault();
         if (!isComms) return;
@@ -54,14 +112,20 @@ export default function NewsManager() {
             return;
         }
 
+        setIsSaving(true);
         try {
+            let finalImageUrl = newPost.imagen;
+
+            // Si hay un archivo seleccionado, lo subimos primero a Cloudinary
+            if (imageFile) {
+                finalImageUrl = await uploadToCloudinary(imageFile);
+            }
+
             const post = {
                 ...newPost,
                 fecha_display: new Date().toLocaleDateString("es-CL"),
                 createdAt: serverTimestamp(),
-                imagen:
-                    newPost.imagen ||
-                    "https://images.unsplash.com/photo-1490122417551-6ee9691429d0?w=800&h=500&fit=crop",
+                imagen: finalImageUrl || "https://images.unsplash.com/photo-1490122417551-6ee9691429d0?w=800&h=500&fit=crop",
             };
 
             await addDoc(collection(db, "noticias"), post);
@@ -72,9 +136,13 @@ export default function NewsManager() {
                 imagen: "",
                 autor: "Comunicaciones",
             });
+            setImageFile(null);
+            setImagePreview(null);
             setShowForm(false);
         } catch (error) {
             alert("Error al guardar la noticia: " + error.message);
+        } finally {
+            setIsSaving(false);
         }
     };
 
@@ -171,23 +239,39 @@ export default function NewsManager() {
                                 />
                             </div>
 
-                            <div>
+                            <div className="md:col-span-1">
                                 <label className="block text-sm font-semibold text-slate-700 mb-2 flex items-center gap-2">
                                     <ImageIcon className="w-4 h-4 text-slate-400" />
-                                    URL de la Imagen Destacada
+                                    Imagen Destacada
                                 </label>
-                                <input
-                                    type="url"
-                                    value={newPost.imagen}
-                                    onChange={(e) =>
-                                        setNewPost({ ...newPost, imagen: e.target.value })
-                                    }
-                                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-impch-primary/20 focus:border-impch-primary transition-all text-sm"
-                                    placeholder="https://images.unsplash.com/..."
-                                />
+                                <div className="flex items-center gap-4">
+                                    <label className="flex flex-col items-center justify-center w-32 h-32 border-2 border-dashed border-slate-200 rounded-2xl hover:bg-slate-50 hover:border-impch-primary cursor-pointer transition-all overflow-hidden relative group">
+                                        {imagePreview ? (
+                                            <img src={imagePreview} className="w-full h-full object-cover" alt="Preview" />
+                                        ) : (
+                                            <div className="flex flex-col items-center text-slate-400">
+                                                <Plus className="w-6 h-6 mb-1" />
+                                                <span className="text-[10px] uppercase font-bold tracking-tighter">Subir</span>
+                                            </div>
+                                        )}
+                                        <input type="file" className="hidden" accept="image/*" onChange={handleImageChange} />
+                                    </label>
+                                    <div className="flex-1">
+                                        <p className="text-xs text-slate-500 mb-2 leading-relaxed">
+                                            Selecciona una fotografía para la noticia. Se recomienda un tamaño de 800x500px para mejor visualización.
+                                        </p>
+                                        <button
+                                            type="button"
+                                            onClick={() => { setImageFile(null); setImagePreview(null); }}
+                                            className="text-[10px] font-bold uppercase text-red-500 hover:text-red-700 underline"
+                                        >
+                                            Quitar imagen
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
 
-                            <div>
+                            <div className="md:col-span-1">
                                 <label className="block text-sm font-semibold text-slate-700 mb-2">
                                     Autor / Departamento
                                 </label>
@@ -213,9 +297,17 @@ export default function NewsManager() {
                             </button>
                             <button
                                 type="submit"
-                                className="bg-impch-accent text-white px-8 py-2.5 rounded-xl font-bold hover:bg-impch-accent-hover transition-all shadow-soft"
+                                disabled={isSaving}
+                                className={`bg-impch-accent text-white px-8 py-2.5 rounded-xl font-bold transition-all shadow-soft flex items-center gap-2 ${isSaving ? 'opacity-70 cursor-not-allowed' : 'hover:bg-impch-accent-hover'}`}
                             >
-                                Publicar Noticia
+                                {isSaving ? (
+                                    <>
+                                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                                        Publicando...
+                                    </>
+                                ) : (
+                                    "Publicar Noticia"
+                                )}
                             </button>
                         </div>
                     </form>

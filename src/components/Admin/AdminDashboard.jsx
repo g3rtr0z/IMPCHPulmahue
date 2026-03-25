@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import AdminSidebar from "./Layout/Sidebar";
 import DashboardStats from "./DashboardStats";
 import UsersManager from "./UsersManager";
@@ -7,6 +7,7 @@ import NewsManager from "../Comunicaciones/NewsManager";
 import MembersManager from "../Pastor/MembersManager";
 import PrayerRequestsManager from "../Pastor/PrayerRequestsManager";
 import CalendarManager from "../Pastor/CalendarManager";
+import ScheduleManager from "../Pastor/ScheduleManager";
 import SocialMediaManager from "../Comunicaciones/SocialMediaManager";
 import RoleBadge from "../shared/RoleBadge";
 import { Menu, Bell } from "lucide-react";
@@ -15,7 +16,18 @@ import { useAuth } from "../../context/AuthContext";
 export default function AdminDashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("dashboard");
-  const { currentUser, userRole, isAdmin } = useAuth();
+  const { currentUser, userRole, userData, isAdmin } = useAuth();
+
+  // Redirección inicial según el rol del usuario
+  useEffect(() => {
+    if (activeTab === "dashboard") {
+      if (userRole === "comunicaciones") {
+        setActiveTab("createEvents");
+      } else if (userRole === "pastor") {
+        setActiveTab("horarios");
+      }
+    }
+  }, [userRole, activeTab]);
 
   // Mapeo dinámico de contenidos para un panel unificado
   const renderContent = () => {
@@ -34,6 +46,8 @@ export default function AdminDashboard() {
         return <MembersManager />;
       case "peticiones":
         return <PrayerRequestsManager />;
+      case "horarios":
+        return <ScheduleManager />;
       case "calendario":
         return <CalendarManager />;
       default:
@@ -93,15 +107,15 @@ export default function AdminDashboard() {
             <div className="flex items-center gap-x-4">
               <img
                 className="h-9 w-9 rounded-full bg-slate-50 border border-slate-200 p-0.5 object-cover"
-                src={`https://ui-avatars.com/api/?name=${currentUser?.email.split("@")[0]}&background=f1f5f9&color=64748b&bold=true`}
+                src={`https://ui-avatars.com/api/?name=${userData?.nombre || currentUser?.email.split("@")[0]}&background=2563eb&color=fff&bold=true`}
                 alt="Avatar"
               />
-              <div className="hidden md:flex flex-col text-sm leading-tight">
-                <span className="font-semibold text-slate-900">
-                  {currentUser?.email.split("@")[0] || "Admin"}
+              <div className="hidden md:flex flex-col text-sm leading-tight text-right">
+                <span className="font-bold text-slate-900">
+                  {userData?.nombre || currentUser?.email.split("@")[0]}
                 </span>
-                <span className="text-xs text-slate-500 uppercase font-bold tracking-wider">
-                  {userRole || "Administrador"}
+                <span className="text-[10px] text-slate-400 uppercase font-black tracking-widest leading-none mt-1">
+                  {userRole}
                 </span>
               </div>
             </div>

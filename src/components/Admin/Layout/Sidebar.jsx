@@ -9,7 +9,8 @@ import {
   Users,
   UserPlus,
   Calendar,
-  Share2
+  Share2,
+  Clock
 } from "lucide-react";
 import { useAuth } from "../../../context/AuthContext";
 import { useRoleInfo } from "../../../hooks/useRoleInfo";
@@ -28,6 +29,7 @@ export default function Sidebar({
   // Definimos la navegación asociada a cada etiqueta de permiso
   const allNavigation = [
     { name: "Resumen Ministerial", id: "dashboard", icon: LayoutDashboard, perm: "dashboard" },
+    { name: "Horarios de Servicios", id: "horarios", icon: Clock, perm: "horarios" },
     { name: "Solicitudes de Ingreso", id: "peticiones", icon: UserPlus, perm: "peticiones" },
     { name: "Directorio de Miembros", id: "viewMembers", icon: Users, perm: "viewMembers" },
     { name: "Calendario de Cultos", id: "calendario", icon: Calendar, perm: "calendario" },
@@ -73,15 +75,19 @@ export default function Sidebar({
         {/* Sidebar Header */}
         <div className="flex h-20 shrink-0 items-center justify-between px-6 border-b border-slate-100">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center text-primary">
-              <BookOpen className="w-6 h-6" />
+            <div className="w-20 h-20 flex items-center justify-center overflow-hidden shrink-0">
+              <img
+                src="/logo-impch.png"
+                alt="Logo IMPCH"
+                className="w-full h-full object-contain p-1"
+              />
             </div>
             <div>
               <span className="font-serif font-bold text-xl text-slate-900 block leading-tight">
-                Admin<span className="text-primary italic">Panel</span>
+                Portal <span className="text-primary italic">IMPCH</span>
               </span>
               <span className="text-[10px] uppercase font-bold tracking-widest text-slate-400">
-                Portal Central
+                Gestión Central
               </span>
             </div>
           </div>
