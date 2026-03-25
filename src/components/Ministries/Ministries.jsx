@@ -1,50 +1,77 @@
+import React, { useState } from 'react';
 import { ministerios } from '../../data/siteData';
 
 function MinistryCard({ m, index }) {
+  const [showInfo, setShowInfo] = useState(false);
   const isEven = index % 2 === 0;
 
+  // Lógica de posición alternada (Zig-Zag)
+  // Si es par: Empieza Imagen Izq (0) / Contenido Der (66.6%)
+  // Si es impar: Empieza Imagen Der (150%) / Contenido Izq (0)
+  const imagePos = isEven
+    ? (showInfo ? 'md:translate-x-[150%]' : 'md:translate-x-0')
+    : (showInfo ? 'md:translate-x-0' : 'md:translate-x-[150%]');
+
+  const contentPos = isEven
+    ? (showInfo ? 'md:translate-x-0' : 'md:translate-x-[66.6%]')
+    : (showInfo ? 'md:translate-x-[66.6%]' : 'md:translate-x-0');
+
   return (
-    <div className="w-full rounded-xl overflow-hidden border border-slate-200 bg-white shadow-sm hover:shadow-md transition-shadow duration-300 flex flex-col md:flex-row">
-      {/* Image Side */}
-      <div className={`w-full md:w-2/5 relative min-h-[250px] ${isEven ? 'order-1 md:order-2' : 'order-1'}`}>
+    <div className="w-full min-h-[500px] md:h-[480px] rounded-xl overflow-hidden border border-slate-200 bg-white shadow-sm hover:shadow-md transition-all duration-300 relative flex flex-col md:block">
+
+      {/* Contenedor de Imagen con Deslizamiento */}
+      <div
+        className={`w-full md:w-2/5 h-[300px] md:h-full transition-all duration-700 ease-in-out md:absolute top-0 bottom-0 z-20 ${imagePos}`}
+      >
         <img
           src={m.imagen}
           alt={m.titulo}
-          className="absolute inset-0 w-full h-full object-cover"
+          className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/40 to-transparent pointer-events-none" />
-        <div className="absolute bottom-6 left-6 text-white text-xs font-semibold tracking-widest uppercase">
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/40 via-transparent to-transparent pointer-events-none" />
+        <div className="absolute bottom-8 left-8 text-white text-[10px] font-bold tracking-[0.3em] uppercase">
           {m.detalle.miembros}
         </div>
       </div>
 
-      {/* Content Side */}
-      <div className={`w-full md:w-3/5 p-8 md:p-12 flex flex-col justify-center ${isEven ? 'order-2 md:order-1' : 'order-2'}`}>
-        <div className="flex items-center gap-2 mb-4">
-          <span className="w-8 h-[1px] bg-slate-300"></span>
+      {/* Contenedor de Contenido con Deslizamiento */}
+      <div
+        className={`w-full md:w-3/5 h-full p-10 md:p-16 flex flex-col justify-center transition-all duration-700 ease-in-out md:absolute top-0 bottom-0 ${contentPos}`}
+      >
+        <div className="flex items-center gap-2 mb-6">
+          <span className="w-8 h-[1px] bg-slate-200"></span>
           <span className="text-[10px] font-semibold tracking-[0.2em] text-slate-400 uppercase">
             {m.subtitulo || 'Departamento'}
           </span>
         </div>
 
-        <h3 className="font-sans font-bold text-2xl md:text-3xl text-slate-800 leading-tight mb-4">
+        <h3 className="font-sans font-bold text-3xl text-slate-900 leading-tight mb-6">
           {m.titulo}
         </h3>
 
-        <p className="text-base text-slate-600 leading-relaxed mb-8">
-          {m.descripcion}
-        </p>
+        <div className={`transition-all duration-500 ${showInfo ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-4 scale-95 pointer-events-none absolute'}`}>
+          <p className="text-slate-600 leading-relaxed mb-8 text-base">
+            {m.descripcion}
+          </p>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-6 border-t border-slate-100">
-          <div>
-            <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-widest block mb-1">Líder</span>
-            <span className="text-slate-800 font-medium text-sm">{m.detalle.lider}</span>
-          </div>
-          <div>
-            <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-widest block mb-1">Horario Central</span>
-            <span className="text-slate-800 font-medium text-sm">{m.detalle.horario}</span>
+          <div className="grid grid-cols-2 gap-8 border-t border-slate-100 pt-8">
+            <div>
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">Responsable</span>
+              <span className="text-slate-900 font-medium text-sm">{m.detalle.lider || m.detalle.encargado}</span>
+            </div>
+            <div>
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">Reunión</span>
+              <span className="text-slate-900 font-medium text-sm">{m.detalle.horario}</span>
+            </div>
           </div>
         </div>
+
+        <button
+          onClick={() => setShowInfo(!showInfo)}
+          className="mt-8 text-[11px] font-bold uppercase tracking-[0.3em] text-slate-900 hover:text-slate-500 transition-colors border-b-2 border-slate-900 pb-1 w-fit"
+        >
+          {showInfo ? 'Cerrar Detalles' : 'Ver Información'}
+        </button>
       </div>
     </div>
   );
