@@ -38,7 +38,7 @@ export default function Header() {
     if (userRole === 'admin') window.location.href = '/admin';
     else if (userRole === 'pastor') window.location.href = '/pastor';
     else if (userRole === 'comunicaciones') window.location.href = '/comunicaciones';
-    else logout().then(() => { window.location.href = '/login'; });
+    else logout().then(() => { window.location.href = '/'; });
   };
 
   return (
