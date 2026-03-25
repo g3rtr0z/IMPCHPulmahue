@@ -2,13 +2,15 @@ import { initializeApp, getApps, getApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 
+// Environment variables are loaded automatically from .env in Vite
+// Use process.env if you are using an older environment, but Vite uses import.meta.env
 export const firebaseConfig = {
-    apiKey: "AIzaSyAt0laOz0zbdMwHe7pK6janSqCzbN1UwoU",
-    authDomain: "proyecto-xyz-bdc27.firebaseapp.com",
-    projectId: "proyecto-xyz-bdc27",
-    storageBucket: "proyecto-xyz-bdc27.firebasestorage.app",
-    messagingSenderId: "448998154501",
-    appId: "1:448998154501:web:104f67386a6941bf1d176c"
+    apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+    authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+    projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+    storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+    appId: import.meta.env.VITE_FIREBASE_APP_ID
 };
 
 // Initialize Firebase only if it hasn't been initialized already
