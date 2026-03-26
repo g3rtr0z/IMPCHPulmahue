@@ -18,20 +18,20 @@ export default function Hero() {
         aria-hidden="true"
       />
 
-      <div className="relative z-10 w-full max-w-[1000px] px-6 py-20 flex flex-col items-center text-center">
-        <div className="max-w-[800px] animate-fadeInUp flex flex-col items-center">
+      <div className="relative z-10 w-full max-w-[1200px] px-6 py-20 flex flex-col items-center text-center">
+        <div className="max-w-[1200px] animate-fadeInUp flex flex-col items-center">
 
           <div className="inline-flex items-center gap-2 px-6 py-1.5 border border-white/20 text-slate-300 text-[10px] sm:text-xs font-semibold uppercase tracking-[0.25em] mb-8">
             <span>Iglesia Metodista Pentecostal de Chile</span>
           </div>
 
           <h1 className="font-sans font-bold text-white mb-8 text-[clamp(2.5rem,6vw,4.5rem)] leading-tight tracking-tight">
-            Descubre tu propósito<br />
-            en nuestra comunidad
+            Pregonando con Poder<br />
+            el Evangelio de Salvación
           </h1>
 
-          <p className="text-lg md:text-xl text-slate-300 mb-12 leading-relaxed max-w-[600px] font-light">
-            ¡Bienvenidos a la Iglesia Metodista Pentecostal de Chile Pulmahue!
+          <p className="text-lg md:text-xl text-slate-300 mb-12 leading-relaxed max-w-[900px] font-light italic border-l-2 border-impch-primary/50 pl-6">
+            Desde hace 15 años, la IMPCH Pulmahue mantiene viva la llama del avivamiento, anunciando la Palabra de Dios en cada hogar para la honra y gloria de nuestro Señor Jesucristo.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-5 sm:items-center justify-center">

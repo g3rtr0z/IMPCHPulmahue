@@ -64,7 +64,7 @@ export default function NewsDetail() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/40 to-transparent" />
                 <div className="absolute bottom-0 left-0 right-0 p-6 md:p-12">
-                    <div className="max-w-[1000px] mx-auto">
+                    <div className="max-w-[1200px] mx-auto">
                         <button
                             onClick={() => navigate('/')}
                             className="flex items-center gap-2 text-white/80 hover:text-white mb-6 bg-transparent border-0 font-semibold transition-colors"
@@ -86,7 +86,7 @@ export default function NewsDetail() {
             </div>
 
             {/* Content */}
-            <div className="max-w-[1000px] mx-auto px-6 py-16">
+            <div className="max-w-[1200px] mx-auto px-6 py-16">
                 <div className="bg-white p-8 md:p-12 rounded-3xl shadow-soft -mt-24 relative z-10 border border-slate-100">
                     <div className="prose prose-lg max-w-none text-gray-700 leading-relaxed">
                         <p className="text-xl font-medium text-gray-900 mb-8 border-l-4 border-primary pl-6 py-1">

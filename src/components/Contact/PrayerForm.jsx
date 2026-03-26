@@ -38,16 +38,32 @@ export default function PrayerForm() {
 
   return (
     <form className="flex flex-col gap-5 w-full" onSubmit={handleSubmit}>
+      {/* Modal de Éxito (Popup) */}
       {success && (
-        <div className="p-4 bg-emerald-50 text-emerald-700 text-sm font-semibold border border-emerald-200 flex gap-3 items-start">
-          <span className="mt-0.5 block shrink-0">✓</span>
-          <p>¡Tus datos han sido enviados exitosamente! Nos pondremos en contacto contigo muy pronto para darte la bienvenida.</p>
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-fadeIn">
+          <div className="bg-white rounded-3xl w-full max-w-sm p-8 shadow-2xl relative border border-slate-100 flex flex-col items-center text-center anim-form">
+            <div className="w-16 h-16 bg-emerald-50 rounded-full flex items-center justify-center mb-6 text-emerald-500">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+            </div>
+            <h3 className="text-xl font-serif font-bold text-slate-900 mb-2">¡Solicitud Enviada!</h3>
+            <p className="text-slate-500 text-sm leading-relaxed mb-6 font-medium">
+              Su solicitud ha sido enviada, pronto se contactará el pastor con usted.
+            </p>
+            <button
+              onClick={() => setSuccess(false)}
+              className="w-full py-3 bg-slate-900 text-white font-bold rounded-xl hover:bg-slate-800 transition-all shadow-md active:scale-95"
+            >
+              Entendido
+            </button>
+          </div>
         </div>
       )}
 
       {error && (
-        <div className="p-4 bg-red-50 text-red-600 text-sm font-semibold border border-red-200 flex gap-3 items-start">
-          <span className="mt-0.5 block shrink-0">⚠</span>
+        <div className="mb-6 p-4 bg-red-50 text-red-600 text-sm font-semibold border border-red-100 rounded-xl flex gap-3 items-start animate-shake">
+          <span className="mt-0.5 block shrink-0">⚠️</span>
           <p>{error}</p>
         </div>
       )}

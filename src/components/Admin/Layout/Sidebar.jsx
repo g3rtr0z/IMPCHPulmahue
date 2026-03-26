@@ -1,17 +1,5 @@
-import {
-  LayoutDashboard,
-  UserCog,
-  ShieldCheck,
-  BookOpen,
-  LogOut,
-  X,
-  Newspaper,
-  Users,
-  UserPlus,
-  Calendar,
-  Share2,
-  Clock
-} from "lucide-react";
+import { LogOut, X } from "lucide-react";
+import { ALL_ADMIN_NAVIGATION } from "../adminNavigation";
 import { useAuth } from "../../../context/AuthContext";
 import { useRoleInfo } from "../../../hooks/useRoleInfo";
 
@@ -24,26 +12,10 @@ export default function Sidebar({
   const { logout, userRole } = useAuth();
 
   // Obtenemos los permisos crudos de la base de datos para el Sidebar
-  const { rawPermissions: userPermsRaw } = useRoleInfo(userRole);
-
-  // Definimos la navegación asociada a cada etiqueta de permiso
-  const allNavigation = [
-    { name: "Resumen Ministerial", id: "dashboard", icon: LayoutDashboard, perm: "dashboard" },
-    { name: "Horarios de Servicios", id: "horarios", icon: Clock, perm: "horarios" },
-    { name: "Solicitudes de Ingreso", id: "peticiones", icon: UserPlus, perm: "peticiones" },
-    { name: "Directorio de Miembros", id: "viewMembers", icon: Users, perm: "viewMembers" },
-    { name: "Calendario de Cultos", id: "calendario", icon: Calendar, perm: "calendario" },
-    { name: "Gestión de Noticias", id: "createEvents", icon: Newspaper, perm: "createEvents" },
-    { name: "Redes Sociales", id: "redes", icon: Share2, perm: "redes" },
-    { name: "Control de Usuarios", id: "editUsers", icon: UserCog, perm: "editUsers" },
-    { name: "Roles y Permisos", id: "manageSystem", icon: ShieldCheck, perm: "manageSystem" },
-  ];
+  const { rawPermissions: userPermsRaw, loading } = useRoleInfo(userRole);
 
   // Filtramos: El admin siempre ve roles. Los demás ven según sus permisos técnicos.
-  const navigation = allNavigation.filter(item => {
-    if (item.perm === "ALWAYS") return true;
-    if (userRole === 'admin' && item.id === 'roles') return true;
-
+  const navigation = ALL_ADMIN_NAVIGATION.filter(item => {
     // Obtenemos los permisos crudos (sin traducir a etiquetas) para el Sidebar
     return userPermsRaw.includes(item.id);
   });
@@ -102,31 +74,38 @@ export default function Sidebar({
 
         {/* Navigation Area */}
         <nav className="flex-1 overflow-y-auto px-4 py-6 space-y-1 scrollbar-thin scrollbar-thumb-slate-200">
-          {navigation.map((item) => {
-            const isActive = activeTab === item.id;
-            return (
-              <button
-                key={item.name}
-                onClick={() => {
-                  setActiveTab(item.id);
-                  setSidebarOpen(false);
-                }}
-                className={`w-full flex items-center gap-3 px-4 py-3 text-sm font-semibold rounded-xl transition-all duration-200 ${isActive
-                  ? "bg-blue-50/80 text-primary shadow-sm ring-1 ring-blue-100/50"
-                  : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
-                  }`}
-              >
-                <item.icon
-                  className={`h-5 w-5 shrink-0 transition-colors ${isActive
-                    ? "text-primary"
-                    : "text-slate-400 group-hover:text-slate-600"
+          {loading ? (
+            <div className="flex flex-col items-center justify-center py-12 opacity-40">
+              <div className="w-8 h-8 border-2 border-slate-200 border-t-primary rounded-full animate-spin mb-3" />
+              <span className="text-[11px] font-bold uppercase tracking-widest text-slate-400">Verificando...</span>
+            </div>
+          ) : (
+            navigation.map((item) => {
+              const isActive = activeTab === item.id;
+              return (
+                <button
+                  key={item.name}
+                  onClick={() => {
+                    setActiveTab(item.id);
+                    setSidebarOpen(false);
+                  }}
+                  className={`w-full flex items-center gap-3 px-4 py-3 text-sm font-semibold rounded-xl transition-all duration-200 ${isActive
+                    ? "bg-blue-50/80 text-primary shadow-sm ring-1 ring-blue-100/50"
+                    : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
                     }`}
-                  aria-hidden="true"
-                />
-                {item.name}
-              </button>
-            );
-          })}
+                >
+                  <item.icon
+                    className={`h-5 w-5 shrink-0 transition-colors ${isActive
+                      ? "text-primary"
+                      : "text-slate-400 group-hover:text-slate-600"
+                      }`}
+                    aria-hidden="true"
+                  />
+                  {item.name}
+                </button>
+              );
+            })
+          )}
         </nav>
 
         {/* Footer actions */}

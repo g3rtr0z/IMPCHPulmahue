@@ -68,7 +68,7 @@ export default function Footer() {
       <div className="h-1 w-full bg-gradient-to-r from-slate-800 via-slate-600 to-slate-800" />
 
       {/* ── Main body ── */}
-      <div className="max-w-[1000px] mx-auto px-6 py-20">
+      <div className="max-w-[1200px] mx-auto px-6 py-20">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-16">
 
           {/* Column 1 – Brand */}
@@ -160,7 +160,7 @@ export default function Footer() {
 
       {/* ── Bottom bar ── */}
       <div className="border-t border-slate-800">
-        <div className="max-w-[1000px] mx-auto px-6 py-6 flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div className="max-w-[1200px] mx-auto px-6 py-6 flex flex-col sm:flex-row items-center justify-between gap-3">
           <span className="text-xs text-slate-600">
             © {new Date().getFullYear()} IMPCH Pulmahue. Todos los derechos reservados.
           </span>

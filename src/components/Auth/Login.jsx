@@ -195,10 +195,9 @@ export default function Login() {
       {/* Contenedor Izquierdo: Imagen (Visible solo en pantallas grandes) */}
       <div className="hidden lg:flex lg:w-1/2 relative bg-slate-900 flex-col justify-end p-16 anim-img">
         <div
-          className="absolute inset-0 bg-cover bg-center opacity-80"
+          className="absolute inset-0 bg-cover bg-center opacity-70 blur-[3px]"
           style={{
-            backgroundImage:
-              "url('https://images.unsplash.com/photo-1438032005730-c779502df39b?q=80&w=2000&auto=format&fit=crop')",
+            backgroundImage: "url('/fondo-login.jpeg')",
           }}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-transparent pointer-events-none" />
