@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import {
@@ -9,15 +9,19 @@ import {
     Radio,
     LogOut,
     X,
+    Home,
 } from "lucide-react";
 import NewsManager from "./NewsManager";
 import SocialMediaManager from "./SocialMediaManager";
 import RoleBadge from "../shared/RoleBadge";
+import { useRoleInfo } from "../../hooks/useRoleInfo";
+import { ALL_ADMIN_NAVIGATION } from "../Admin/adminNavigation";
 
 export default function ComunicacionesDashboard() {
-    const { currentUser, logout } = useAuth();
-    const [activeTab, setActiveTab] = useState("noticias");
+    const { currentUser, logout, userRole, userData } = useAuth();
     const [sidebarOpen, setSidebarOpen] = useState(false);
+    const [activeTab, setActiveTab] = useState("dashboard");
+    const { rawPermissions: userPermsRaw, loading: loadingPerms } = useRoleInfo(userRole);
     const navigate = useNavigate();
 
     const handleLogout = async () => {
@@ -29,14 +33,38 @@ export default function ComunicacionesDashboard() {
         }
     };
 
-    const navigation = [
-        { name: "Gestión de Noticias", id: "noticias", icon: Newspaper },
-    ];
+    // Filtrado dinámico basado estrictamente en permisos
+    const allowedNavigation = React.useMemo(() => {
+        return ALL_ADMIN_NAVIGATION.filter(item => {
+            return userPermsRaw.includes(item.id);
+        });
+    }, [userRole, userPermsRaw]);
+
+    // Salto inteligente al primer módulo HABILITADO
+    useEffect(() => {
+        if (!loadingPerms && allowedNavigation.length > 0) {
+            const firstTabId = allowedNavigation[0].id;
+            if (activeTab === "dashboard" && activeTab !== firstTabId) {
+                setActiveTab(firstTabId);
+            }
+        }
+    }, [loadingPerms, allowedNavigation, activeTab]);
 
     const renderContent = () => {
+        if (loadingPerms) {
+            return (
+                <div className="flex flex-col items-center justify-center min-h-[400px]">
+                    <div className="w-10 h-10 border-4 border-slate-100 border-t-impch-primary rounded-full animate-spin mb-4" />
+                    <p className="text-slate-500 font-medium animate-pulse">Cargando herramientas...</p>
+                </div>
+            );
+        }
+
         switch (activeTab) {
-            case "noticias":
+            case "createEvents":
                 return <NewsManager />;
+            case "redes":
+                return <SocialMediaManager />;
             default:
                 return (
                     <div className="bg-white rounded-2xl shadow-card p-12 flex flex-col items-center justify-center min-h-[400px] text-center border-dashed border-2 border-slate-200">
@@ -47,7 +75,7 @@ export default function ComunicacionesDashboard() {
                             Panel de Comunicaciones
                         </h3>
                         <p className="text-slate-500 max-w-sm mt-2">
-                            Gestiona el contenido y difusión de nuestra iglesia desde aquí.
+                            Selecciona una herramienta del menú lateral para comenzar a gestionar el contenido de la iglesia.
                         </p>
                     </div>
                 );
@@ -89,7 +117,7 @@ export default function ComunicacionesDashboard() {
                     </button>
                 </div>
                 <nav className="flex-1 overflow-y-auto px-4 py-6 space-y-2">
-                    {navigation.map((item) => {
+                    {allowedNavigation.map((item) => {
                         const isActive = activeTab === item.id;
                         return (
                             <button
@@ -114,13 +142,21 @@ export default function ComunicacionesDashboard() {
                         );
                     })}
                 </nav>
-                <div className="p-4 border-t border-slate-100">
+                <div className="p-4 border-t border-slate-100 flex items-center justify-between gap-3">
+                    <div className="flex flex-col min-w-0">
+                        <span className="text-sm font-bold text-impch-dark-panel truncate">
+                            {userData?.nombre || currentUser?.email.split("@")[0]}
+                        </span>
+                        <span className="text-[10px] text-impch-primary uppercase font-bold tracking-widest leading-none mt-1">
+                            {userRole}
+                        </span>
+                    </div>
                     <button
                         onClick={handleLogout}
-                        className="w-full flex items-center gap-3 px-4 py-3 text-sm font-semibold text-red-600 rounded-xl hover:bg-red-50 transition-colors group"
+                        className="p-2.5 text-red-600 hover:bg-red-50 rounded-xl transition-colors group flex-shrink-0"
+                        title="Cerrar sesión"
                     >
-                        <LogOut className="h-5 w-5 text-red-400 group-hover:text-red-500 transition-colors" />
-                        Cerrar sesión
+                        <LogOut className="h-5 w-5 text-red-400 group-hover:text-red-600" />
                     </button>
                 </div>
             </div>
@@ -136,26 +172,14 @@ export default function ComunicacionesDashboard() {
                         <Menu className="h-6 w-6" />
                     </button>
 
-                    <div className="flex flex-1 items-center justify-end gap-x-6">
-                        <RoleBadge roleId="comunicaciones" />
-                        <button className="text-slate-400 hover:text-slate-500 relative group transition-colors">
-                            <Bell className="h-6 w-6" />
-                            <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full border border-white group-hover:bg-red-600"></span>
-                        </button>
-                        <div className="w-px h-6 bg-slate-200" />
-                        <div className="flex items-center gap-x-4">
-                            <img
-                                className="h-9 w-9 rounded-full bg-slate-50 border border-slate-200 object-cover"
-                                src={`https://ui-avatars.com/api/?name=${currentUser?.email.split("@")[0]}&background=cffafe&color=0891b2&bold=true`}
-                                alt="Comunicaciones"
-                            />
-                            <div className="hidden md:flex flex-col text-sm leading-tight text-right">
-                                <span className="font-semibold text-impch-dark-panel">Equipo Media</span>
-                                <span className="text-xs text-impch-primary uppercase font-bold tracking-wider">
-                                    Comunicaciones
-                                </span>
-                            </div>
-                        </div>
+                    <div className="flex flex-1 items-center justify-end">
+                        <a
+                            href="/"
+                            className="p-2 text-slate-400 hover:text-slate-900 transition-colors bg-slate-50 hover:bg-slate-100 rounded-xl flex items-center justify-center border border-slate-100"
+                            title="Volver al inicio"
+                        >
+                            <Home className="h-5 w-5" aria-hidden="true" />
+                        </a>
                     </div>
                 </header>
 

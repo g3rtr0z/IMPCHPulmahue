@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import {
@@ -12,17 +12,22 @@ import {
   LogOut,
   X,
   UserPlus,
+  Home,
 } from "lucide-react";
 import MembersManager from "./MembersManager";
 import PrayerRequestsManager from "./PrayerRequestsManager";
 import PastorDashboardStats from "./PastorDashboardStats";
 import CalendarManager from "./CalendarManager";
+import ScheduleManager from "./ScheduleManager";
 import RoleBadge from "../shared/RoleBadge";
+import { useRoleInfo } from "../../hooks/useRoleInfo";
+import { ALL_ADMIN_NAVIGATION } from "../Admin/adminNavigation";
 
 export default function PastorDashboard() {
-  const { currentUser, logout } = useAuth();
-  const [activeTab, setActiveTab] = useState("resumen");
+  const { currentUser, logout, userRole, userData } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState("dashboard");
+  const { rawPermissions: userPermsRaw, loading: loadingPerms } = useRoleInfo(userRole);
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -34,24 +39,45 @@ export default function PastorDashboard() {
     }
   };
 
-  // Navegación enfocada para el Pastor
-  const navigation = [
-    { name: "Resumen Ministerial", id: "resumen", icon: BookHeart },
-    { name: "Solicitudes de Ingreso", id: "peticiones", icon: UserPlus },
-    { name: "Directorio de Miembros", id: "miembros", icon: Users },
-    { name: "Calendario de Cultos", id: "calendario", icon: Calendar },
-  ];
+  // Filtrado dinámico basado estrictamente en permisos
+  const allowedNavigation = React.useMemo(() => {
+    return ALL_ADMIN_NAVIGATION.filter(item => {
+      return userPermsRaw.includes(item.id);
+    });
+  }, [userRole, userPermsRaw]);
+
+  // Salto inteligente al primer módulo HABILITADO
+  useEffect(() => {
+    if (!loadingPerms && allowedNavigation.length > 0) {
+      const firstTabId = allowedNavigation[0].id;
+      if (activeTab === "dashboard" && activeTab !== firstTabId) {
+        setActiveTab(firstTabId);
+      }
+    }
+  }, [loadingPerms, allowedNavigation, activeTab]);
 
   const renderContent = () => {
+    if (loadingPerms) {
+      return (
+        <div className="flex flex-col items-center justify-center min-h-[400px]">
+          <div className="w-10 h-10 border-4 border-slate-100 border-t-primary rounded-full animate-spin mb-4" />
+          <p className="text-slate-500 font-medium animate-pulse">Sincronizando portal...</p>
+        </div>
+      );
+    }
+
     switch (activeTab) {
-      case "resumen":
+      case "dashboard":
         return <PastorDashboardStats />;
       case "miembros":
+      case "viewMembers":
         return <MembersManager />;
       case "calendario":
         return <CalendarManager />;
       case "peticiones":
         return <PrayerRequestsManager />;
+      case "horarios":
+        return <ScheduleManager />;
       default:
         return (
           <div className="bg-white rounded-2xl shadow-sm ring-1 ring-slate-200/50 p-12 flex flex-col items-center justify-center min-h-[400px] text-center border-dashed border-2 border-slate-100">
@@ -59,11 +85,10 @@ export default function PastorDashboard() {
               <BookHeart className="w-8 h-8" />
             </div>
             <h3 className="text-xl font-bold text-slate-700">
-              Sección en Preparación
+              Módulo Ministerial
             </h3>
             <p className="text-slate-500 max-w-sm mt-2">
-              Estamos vinculando esta sección administrativa ministerial. Muy
-              pronto dispondrá de todas las herramientas.
+              Selecciona una de tus herramientas en el menú de la izquierda para comenzar la gestión.
             </p>
           </div>
         );
@@ -105,7 +130,7 @@ export default function PastorDashboard() {
           </button>
         </div>
         <nav className="flex-1 overflow-y-auto px-4 py-6 space-y-2">
-          {navigation.map((item) => {
+          {allowedNavigation.map((item) => {
             const isActive = activeTab === item.id;
             return (
               <button
@@ -130,13 +155,21 @@ export default function PastorDashboard() {
             );
           })}
         </nav>
-        <div className="p-4 border-t border-slate-100">
+        <div className="p-4 border-t border-slate-100 flex items-center justify-between gap-3">
+          <div className="flex flex-col min-w-0">
+            <span className="text-sm font-bold text-slate-900 truncate">
+              {userData?.nombre || currentUser?.email.split("@")[0]}
+            </span>
+            <span className="text-[10px] text-primary uppercase font-bold tracking-widest leading-none mt-1">
+              {userRole}
+            </span>
+          </div>
           <button
             onClick={handleLogout}
-            className="w-full flex items-center gap-3 px-4 py-3 text-sm font-semibold text-red-600 rounded-xl hover:bg-red-50 transition-colors group"
+            className="p-2.5 text-red-600 hover:bg-red-50 rounded-xl transition-colors group flex-shrink-0"
+            title="Cerrar sesión"
           >
-            <LogOut className="h-5 w-5 text-red-400 group-hover:text-red-500 transition-colors" />
-            Cerrar sesión
+            <LogOut className="h-5 w-5 text-red-400 group-hover:text-red-600" />
           </button>
         </div>
       </div>
@@ -152,26 +185,14 @@ export default function PastorDashboard() {
             <Menu className="h-6 w-6" />
           </button>
 
-          <div className="flex flex-1 items-center justify-end gap-x-6">
-            <RoleBadge roleId="pastor" />
-            <button className="text-slate-400 hover:text-slate-500 relative">
-              <Bell className="h-6 w-6" />
-              <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
-            </button>
-            <div className="w-px h-6 bg-slate-200" />
-            <div className="flex items-center gap-x-4">
-              <img
-                className="h-9 w-9 rounded-full bg-slate-50 border border-slate-200 object-cover"
-                src={`https://ui-avatars.com/api/?name=${currentUser?.email.split("@")[0]}&background=bfdbfe&color=1e3a8a&bold=true`}
-                alt="Pastor"
-              />
-              <div className="hidden md:flex flex-col text-sm leading-tight text-right">
-                <span className="font-semibold text-slate-900">Pastor</span>
-                <span className="text-xs text-primary uppercase font-bold tracking-wider">
-                  {currentUser?.email}
-                </span>
-              </div>
-            </div>
+          <div className="flex flex-1 items-center justify-end">
+            <a
+              href="/"
+              className="p-2 text-slate-400 hover:text-slate-900 transition-colors bg-slate-50 hover:bg-slate-100 rounded-xl flex items-center justify-center border border-slate-100"
+              title="Volver al inicio"
+            >
+              <Home className="h-5 w-5" aria-hidden="true" />
+            </a>
           </div>
         </header>
 

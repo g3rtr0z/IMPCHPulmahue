@@ -10,7 +10,7 @@ import CalendarManager from "../Pastor/CalendarManager";
 import ScheduleManager from "../Pastor/ScheduleManager";
 import SocialMediaManager from "../Comunicaciones/SocialMediaManager";
 import RoleBadge from "../shared/RoleBadge";
-import { Menu, Bell } from "lucide-react";
+import { Menu, Bell, Home } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import { useRoleInfo } from "../../hooks/useRoleInfo";
 import { ALL_ADMIN_NAVIGATION } from "./adminNavigation";
@@ -113,39 +113,15 @@ export default function AdminDashboard() {
             <Menu className="h-6 w-6" aria-hidden="true" />
           </button>
 
-          {/* Right side navbar items */}
-          <div className="flex flex-1 items-center justify-end gap-x-4 lg:gap-x-6">
-            <RoleBadge roleId={userRole} />
-
-            <button
-              type="button"
-              className="-m-2.5 p-2.5 text-slate-400 hover:text-slate-500 transition-colors relative group"
+          {/* Right side navbar items - Solo el botón de inicio */}
+          <div className="flex flex-1 items-center justify-end">
+            <a
+              href="/"
+              className="p-2 text-slate-400 hover:text-slate-900 transition-colors bg-slate-50 hover:bg-slate-100 rounded-xl flex items-center justify-center border border-slate-100"
+              title="Volver al inicio"
             >
-              <span className="sr-only">Ver notificaciones</span>
-              <Bell className="h-6 w-6" aria-hidden="true" />
-              <span className="absolute top-2 right-2.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white group-hover:bg-red-600 transition-colors"></span>
-            </button>
-
-            <div
-              className="hidden lg:block lg:h-6 lg:w-px lg:bg-slate-200"
-              aria-hidden="true"
-            />
-
-            <div className="flex items-center gap-x-4">
-              <img
-                className="h-9 w-9 rounded-full bg-slate-50 border border-slate-200 p-0.5 object-cover"
-                src={`https://ui-avatars.com/api/?name=${userData?.nombre || currentUser?.email.split("@")[0]}&background=2563eb&color=fff&bold=true`}
-                alt="Avatar"
-              />
-              <div className="hidden md:flex flex-col text-sm leading-tight text-right">
-                <span className="font-bold text-slate-900">
-                  {userData?.nombre || currentUser?.email.split("@")[0]}
-                </span>
-                <span className="text-[10px] text-slate-400 uppercase font-black tracking-widest leading-none mt-1">
-                  {userRole}
-                </span>
-              </div>
-            </div>
+              <Home className="h-5 w-5" aria-hidden="true" />
+            </a>
           </div>
         </header>
 

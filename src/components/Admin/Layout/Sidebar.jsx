@@ -9,7 +9,7 @@ export default function Sidebar({
   sidebarOpen,
   setSidebarOpen,
 }) {
-  const { logout, userRole } = useAuth();
+  const { logout, userRole, currentUser, userData } = useAuth();
 
   // Obtenemos los permisos crudos de la base de datos para el Sidebar
   const { rawPermissions: userPermsRaw, loading } = useRoleInfo(userRole);
@@ -109,13 +109,21 @@ export default function Sidebar({
         </nav>
 
         {/* Footer actions */}
-        <div className="p-4 border-t border-slate-100">
+        <div className="p-4 border-t border-slate-100 flex items-center justify-between gap-3">
+          <div className="flex flex-col min-w-0">
+            <span className="text-sm font-bold text-slate-900 truncate">
+              {userData?.nombre || currentUser?.email.split("@")[0]}
+            </span>
+            <span className="text-[10px] text-slate-400 uppercase font-bold tracking-widest leading-none mt-1">
+              {userRole}
+            </span>
+          </div>
           <button
             onClick={handleLogout}
-            className="w-full flex items-center gap-3 px-4 py-3 text-sm font-semibold text-red-600 rounded-xl hover:bg-red-50 transition-colors group"
+            className="p-2.5 text-red-600 hover:bg-red-50 rounded-xl transition-colors group flex-shrink-0"
+            title="Cerrar sesión"
           >
-            <LogOut className="h-5 w-5 text-red-400 group-hover:text-red-500 transition-colors" />
-            Cerrar sesión
+            <LogOut className="h-5 w-5 text-red-400 group-hover:text-red-600" />
           </button>
         </div>
       </div>

@@ -15,9 +15,13 @@ export default function ProtectedRoute({ children, roleRequired }) {
     if (roleRequired) {
         const hasRole = Array.isArray(roleRequired)
             ? roleRequired.includes(userRole)
-            : userRole === roleRequired || userRole === 'admin';
+            : userRole === roleRequired;
 
         if (!hasRole) {
+            // Redirección inteligente: Si intentas entrar a un portal ajeno, te mando al TUYO.
+            if (userRole === 'admin') return <Navigate to="/admin" />;
+            if (userRole === 'pastor') return <Navigate to="/pastor" />;
+            if (userRole === 'comunicaciones') return <Navigate to="/comunicaciones" />;
             return <Navigate to="/" />;
         }
     }

@@ -128,8 +128,12 @@ export default function Login() {
         const userDoc = await getDoc(doc(db, "users", userCred.user.uid));
         if (userDoc.exists()) {
           const role = userDoc.data().role;
-          if (role === "admin" || role === "pastor" || role === "comunicaciones") {
+          if (role === "admin") {
             window.location.href = "/admin";
+          } else if (role === "pastor") {
+            window.location.href = "/pastor";
+          } else if (role === "comunicaciones") {
+            window.location.href = "/comunicaciones";
           } else {
             window.location.href = "/";
           }
