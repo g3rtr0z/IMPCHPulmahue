@@ -49,8 +49,16 @@
 
   html {
     scroll-behavior: smooth;
-    scroll-padding-top: 4.5rem;
-    /* Ajustado a la altura real del header flotante para evitar que se vea el fondo de la sección anterior */
+    scroll-padding-top: 160px;
+    /* Ocultar barra de scroll en todos los navegadores */
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE y Edge */
+  }
+
+  /* Ocultar barra de scroll en Chrome/Safari/Brave */
+  html::-webkit-scrollbar,
+  body::-webkit-scrollbar {
+    display: none;
   }
 
   body {
@@ -62,6 +70,7 @@
     background-color: #f8fafc;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
   }
 
   #root {

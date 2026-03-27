@@ -5,7 +5,7 @@ import MinistryCard from './MinistryCard';
 export default function Ministries() {
   return (
     <section id="departamentos" className="py-24 bg-slate-50 border-b border-slate-200">
-      <div className="max-w-[1200px] mx-auto px-6">
+      <div className="max-w-[1400px] mx-auto px-8">
         {/* Encabezado de la Sección */}
         <div className="text-center mb-16">
           <span className="text-xs font-semibold tracking-widest text-slate-400 uppercase mb-4 block">

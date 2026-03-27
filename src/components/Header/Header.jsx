@@ -1,27 +1,25 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { navLinks } from '../../data/siteData';
-import { User, Menu, X } from 'lucide-react';
+import { navLinks, contactInfo } from '../../data/siteData';
+import { User, Menu, X, Phone, Mail, MapPin, Instagram, Facebook, Youtube } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Header() {
   const { currentUser, userRole, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  const [isScrolled, setIsScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [activeHash, setActiveHash] = useState(window.location.hash || '#inicio');
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
-      
       const sections = ['inicio', 'servicios', 'departamentos', 'noticias'];
       for (const section of sections) {
         const element = document.getElementById(section);
         if (element) {
           const rect = element.getBoundingClientRect();
-          if (rect.top <= 120 && rect.bottom >= 120) {
+          if (rect.top <= 140 && rect.bottom >= 140) {
             setActiveHash(`#${section}`);
             break;
           }
@@ -58,44 +56,61 @@ export default function Header() {
     else logout().then(() => { window.location.href = '/'; });
   };
 
+  const half = Math.ceil(navLinks.length / 2);
+  const leftLinks = navLinks.slice(0, half);
+  const rightLinks = navLinks.slice(half);
+
   return (
     <>
-      <header 
-        className={`fixed top-0 left-0 right-0 w-full z-[100] h-[74px] flex items-center transition-all duration-500 ease-in-out border-b
-          ${isScrolled 
-            ? 'bg-white/95 backdrop-blur-md border-slate-200/60 shadow-md' 
-            : 'bg-white border-slate-100 shadow-none'}`}
-      >
-        <div className="max-w-[1200px] w-full mx-auto px-6 relative h-full">
-          <div className="flex items-center justify-between h-full">
-
-            {/* Logo Section - Minimal Branding */}
-            <a
-              href="/"
-              onClick={(e) => { e.preventDefault(); navigate('/'); setMobileOpen(false); setActiveHash('#inicio'); }}
-              className="flex items-center gap-3 text-slate-900 group z-10"
-            >
-              <div className="relative shrink-0">
-                <img
-                  src="/logo-impch.png"
-                  alt="Logo IMPCH"
-                  className={`transition-all duration-500 ${isScrolled ? 'h-10' : 'h-11'}`}
-                />
-              </div>
-              <span className="font-sans font-bold text-lg leading-none tracking-tight hidden md:block text-slate-900">
-                IMPCH Pulmahue
+      <header className="fixed top-0 left-0 right-0 w-full z-[100] shadow-md bg-white border-b border-slate-100">
+        {/* Upper Top Bar - Always Visible Navy Blue */}
+        <div className="hidden lg:block bg-[#1e3a5f] text-white/90 h-10">
+          <div className="max-w-[1400px] mx-auto h-full px-8 flex justify-between items-center text-[10px] uppercase tracking-widest font-semibold">
+            <div className="flex gap-8">
+              <span className="flex items-center gap-2">
+                <Phone className="w-3.5 h-3.5 text-impch-accent-light" />
+                {contactInfo.telefono}
               </span>
-            </a>
-
-            {/* Mobile Centered Title */}
-            <div className="absolute left-1/2 -translate-x-1/2 md:hidden z-0">
-               <span className="font-sans font-bold text-lg leading-none tracking-tight whitespace-nowrap text-slate-900 ">
-                IMPCH Pulmahue
+              <span className="flex items-center gap-2">
+                <Mail className="w-3.5 h-3.5 text-impch-accent-light" />
+                {contactInfo.email}
               </span>
             </div>
+            <div className="flex gap-8">
+              <span className="flex items-center gap-2">
+                <MapPin className="w-3.5 h-3.5 text-impch-accent-light" />
+                {contactInfo.direccion}
+              </span>
+              <div className="flex gap-4 border-l border-white/10 pl-4">
+                <Facebook className="w-3.5 h-3.5 hover:text-impch-accent-light cursor-pointer transition-colors" />
+                <Instagram className="w-3.5 h-3.5 hover:text-impch-accent-light cursor-pointer transition-colors" />
+                <Youtube className="w-3.5 h-3.5 hover:text-impch-accent-light cursor-pointer transition-colors" />
+              </div>
+            </div>
+          </div>
+        </div>
 
-            {/* Navigation Centered Desktop */}
-            <nav className="hidden lg:flex absolute left-1/2 -translate-x-1/2 items-center gap-10 h-full">
+        {/* Main Header Row - Always White/Solid */}
+        <div className="w-full h-28 flex justify-center py-0">
+          <div className="max-w-[1400px] w-full relative flex items-center justify-between px-8 lg:px-12">
+            
+            {/* Left Column: Branding */}
+            <div className="flex-1 flex justify-start items-center">
+              <a
+                href="/"
+                onClick={(e) => { e.preventDefault(); navigate('/'); setMobileOpen(false); setActiveHash('#inicio'); }}
+                className="flex items-center gap-5 group"
+              >
+                <img src="/logo-impch.png" alt="Logo IMPCH" className="h-16 w-auto object-contain transition-transform duration-500 group-hover:scale-110" />
+                <div className="flex flex-col">
+                  <span className="font-serif italic text-2xl text-impch-primary font-bold leading-none">IMPCH</span>
+                  <span className="font-sans text-[11px] uppercase tracking-[0.35em] font-extrabold text-[#111827]">Pulmahue</span>
+                </div>
+              </a>
+            </div>
+
+            {/* Center Column: Full Navigation */}
+            <nav className="hidden lg:flex items-center justify-center gap-12">
               {navLinks.map((link) => {
                 const isActive = activeHash === link.href && location.pathname === '/';
                 return (
@@ -103,92 +118,96 @@ export default function Header() {
                     key={link.label}
                     href={link.href}
                     onClick={(e) => handleNavClick(e, link.href)}
-                    className={`relative flex items-center h-full text-[11px] font-bold uppercase tracking-[0.2em] transition-all duration-300 group
-                      ${isActive ? 'text-impch-primary' : 'text-slate-400 hover:text-slate-900'}`}
+                    className={`nav-link text-[11px] font-bold uppercase tracking-[0.25em] transition-all duration-300 relative group
+                      ${isActive ? 'text-impch-primary' : 'text-slate-500 hover:text-impch-primary'}`}
                   >
                     {link.label}
-                    {/* Active Accent Dot */}
-                    <span className={`absolute bottom-4 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-impch-primary transition-all duration-300 transform scale-0
-                      ${isActive ? 'scale-100 opacity-100' : 'group-hover:scale-50 group-hover:opacity-40'}`} 
-                    />
+                    <span className={`absolute -bottom-2 left-0 w-0 h-0.5 bg-impch-primary transition-all duration-300 group-hover:w-full ${isActive ? 'w-full' : ''}`} />
                   </a>
                 );
               })}
             </nav>
 
-            {/* Action Buttons */}
-            <div className="flex items-center gap-4 z-10">
-              {!currentUser ? (
-                <button
-                  onClick={() => { navigate('/login'); setMobileOpen(false); }}
-                  className="hidden lg:flex items-center justify-center gap-2 px-5 py-2.5 bg-slate-50 border border-slate-200 text-slate-600 rounded-full text-[10px] font-bold uppercase tracking-widest hover:bg-slate-100 hover:text-slate-900 transition-all duration-300 group"
-                >
-                  <User className="w-4 h-4" />
-                  Miembros
-                </button>
-              ) : (
-                <button
-                  onClick={handlePortal}
-                  className="hidden lg:flex items-center justify-center px-6 py-2.5 bg-impch-primary text-white text-[10px] uppercase tracking-widest font-bold hover:bg-impch-primary-hover shadow-sm hover:shadow-md transition-all duration-300 rounded-lg"
-                >
-                  Portal
-                </button>
-              )}
-
+            {/* Right Column: Actions */}
+            <div className="flex-1 hidden lg:flex items-center justify-end">
               <button
-                className="lg:hidden p-2.5 text-slate-700 hover:bg-slate-50 transition-all duration-300 rounded-xl border border-transparent hover:border-slate-100"
-                onClick={() => setMobileOpen((v) => !v)}
+                onClick={currentUser ? handlePortal : () => navigate('/login')}
+                className="flex items-center justify-center gap-2 px-8 py-3 rounded-full text-[10px] font-bold uppercase tracking-widest bg-impch-primary text-white hover:bg-impch-accent shadow-md transition-all duration-300 transform active:scale-95"
               >
-                {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+                <User className="w-3.5 h-3.5" />
+                {currentUser ? 'Portal' : 'Miembros'}
               </button>
             </div>
+
+            {/* Mobile Menu Toggle */}
+            <button className="lg:hidden p-2 text-slate-900" onClick={() => setMobileOpen((v) => !v)}>
+              {mobileOpen ? <X className="w-8 h-8" /> : <Menu className="w-8 h-8" />}
+            </button>
           </div>
         </div>
       </header>
 
-      {/* ── Mobile Drawer ── */}
-      <div
-        className={`fixed inset-0 z-[150] bg-slate-900/60 backdrop-blur-md transition-opacity duration-300 lg:hidden ${mobileOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
-        onClick={() => setMobileOpen(false)}
-      />
+      {/* Mobile Drawer */}
+      <AnimatePresence>
+        {mobileOpen && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-[150] bg-slate-900/40 backdrop-blur-md lg:hidden"
+              onClick={() => setMobileOpen(false)}
+            />
+            <motion.div
+              initial={{ x: '100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '100%' }}
+              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+              className="fixed top-0 right-0 h-full w-80 max-w-[85vw] z-[160] bg-white flex flex-col shadow-2xl lg:hidden"
+            >
+              <div className="flex items-center justify-between px-8 h-[80px] border-b border-slate-100">
+                <div className="flex items-center gap-3">
+                  <img src="/logo-impch.png" alt="Logo IMPCH" className="h-10 w-auto" />
+                  <div className="flex flex-col">
+                    <span className="font-serif italic text-lg text-impch-primary leading-none">IMPCH</span>
+                    <span className="font-sans text-[8px] uppercase tracking-widest font-bold">Pulmahue</span>
+                  </div>
+                </div>
+                <button onClick={() => setMobileOpen(false)} className="p-2 text-slate-400">
+                  <X className="w-6 h-6" />
+                </button>
+              </div>
 
-      <div
-        className={`fixed top-0 right-0 h-full w-80 max-w-[85vw] z-[160] bg-white border-l border-slate-200 flex flex-col shadow-2xl transition-transform duration-500 ease-in-out lg:hidden ${mobileOpen ? 'translate-x-0' : 'translate-x-full'}`}
-      >
-        <div className="flex items-center justify-between px-8 h-[80px] border-b border-slate-100">
-          <img src="/logo-impch.png" alt="Logo IMPCH" className="h-10 w-auto object-contain" />
-          <button onClick={() => setMobileOpen(false)} className="p-2 text-slate-400">
-            <X className="w-6 h-6" />
-          </button>
-        </div>
+              <nav className="flex-1 overflow-y-auto px-6 py-10 flex flex-col gap-2">
+                {navLinks.map((link) => {
+                  const isActive = activeHash === link.href && location.pathname === '/';
+                  return (
+                    <a
+                      key={link.label}
+                      href={link.href}
+                      onClick={(e) => handleNavClick(e, link.href)}
+                      className={`flex items-center px-6 py-4 text-xs font-bold tracking-[0.2em] uppercase transition-all rounded-xl
+                        ${isActive ? 'bg-impch-primary text-white shadow-lg' : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50'}`}
+                    >
+                      {link.label}
+                    </a>
+                  );
+                })}
+              </nav>
 
-        <nav className="flex-1 overflow-y-auto px-6 py-10 flex flex-col gap-2">
-          {navLinks.map((link) => {
-            const isActive = activeHash === link.href && location.pathname === '/';
-            return (
-              <a
-                key={link.label}
-                href={link.href}
-                onClick={(e) => handleNavClick(e, link.href)}
-                className={`flex items-center px-5 py-4 text-xs font-bold tracking-[0.2em] uppercase transition-all rounded-xl
-                  ${isActive ? 'bg-impch-primary text-white shadow-lg shadow-impch-primary/20' : 'text-slate-400 hover:text-slate-900 hover:bg-slate-50'}`}
-              >
-                {link.label}
-              </a>
-            );
-          })}
-        </nav>
-
-        <div className="p-8 border-t border-slate-100 bg-slate-50/50">
-          <button
-            onClick={() => { currentUser ? handlePortal() : navigate('/login'); setMobileOpen(false); }}
-            className="w-full flex items-center justify-center gap-3 py-4 bg-slate-900 text-white text-[10px] font-bold uppercase tracking-[0.2em] hover:bg-impch-primary transition-all shadow-md rounded-xl"
-          >
-            <User className="w-4 h-4" />
-            {currentUser ? 'Ir al Portal' : 'Acceso Miembros'}
-          </button>
-        </div>
-      </div>
+              <div className="p-8 border-t border-slate-100">
+                <button
+                  onClick={currentUser ? handlePortal : () => { navigate('/login'); setMobileOpen(false); }}
+                  className="w-full flex items-center justify-center gap-3 py-4 bg-impch-primary text-white text-[10px] font-bold uppercase tracking-[0.2em] rounded-xl shadow-lg"
+                >
+                  <User className="w-4 h-4" />
+                  {currentUser ? 'Ir al Portal' : 'Acceso Miembros'}
+                </button>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </>
   );
 }
