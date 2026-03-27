@@ -70,9 +70,10 @@ function MinistryCard({ m, index }) {
 
                 <button
                     onClick={() => setShowInfo(!showInfo)}
-                    className="mt-6 text-[10px] font-extrabold uppercase tracking-[0.3em] text-slate-900 hover:text-slate-500 transition-colors border-b-2 border-slate-900 pb-1 w-fit cursor-pointer relative z-30"
+                    className="mt-6 text-[10px] font-extrabold uppercase tracking-[0.3em] text-slate-900 hover:text-impch-primary transition-all flex items-center gap-2 group/btn cursor-pointer relative z-30"
                 >
                     {showInfo ? 'Cerrar Detalles' : 'Ver Información'}
+                    <div className="w-4 h-[1px] bg-slate-200 group-hover/btn:bg-impch-primary transition-colors" />
                 </button>
             </div>
         </div>
