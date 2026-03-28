@@ -49,10 +49,25 @@
 
   html {
     scroll-behavior: smooth;
-    scroll-padding-top: 160px;
     /* Ocultar barra de scroll en todos los navegadores */
     scrollbar-width: none; /* Firefox */
     -ms-overflow-style: none; /* IE y Edge */
+  }
+
+  /* Offset para anclas considerando el header fixed */
+  section[id] {
+    scroll-margin-top: 80px; /* Altura header mobile */
+  }
+
+  @media (min-width: 1024px) {
+    section[id] {
+      scroll-margin-top: 112px; /* Altura header desktop (32px top bar + 80px nav) */
+    }
+  }
+
+  /* El inicio no debe tener offset porque queremos ver el top de la página */
+  #inicio {
+    scroll-margin-top: 0;
   }
 
   /* Ocultar barra de scroll en Chrome/Safari/Brave */

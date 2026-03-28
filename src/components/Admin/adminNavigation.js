@@ -7,7 +7,8 @@ import {
     Newspaper,
     Share2,
     UserCog,
-    ShieldCheck
+    ShieldCheck,
+    Briefcase
 } from "lucide-react";
 
 export const ALL_ADMIN_NAVIGATION = [
@@ -20,4 +21,5 @@ export const ALL_ADMIN_NAVIGATION = [
     { name: "Redes Sociales", id: "redes", icon: Share2, perm: "redes" },
     { name: "Control de Usuarios", id: "editUsers", icon: UserCog, perm: "editUsers" },
     { name: "Roles y Permisos", id: "manageSystem", icon: ShieldCheck, perm: "manageSystem" },
+    { name: "Ministerios y Cargos", id: "manageMinistries", icon: Briefcase, perm: "manageMinistries" },
 ];

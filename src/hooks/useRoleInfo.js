@@ -12,6 +12,7 @@ const permissionLabels = {
     calendario: "Gestionar Calendario",
     editUsers: "Editar Usuarios",
     manageSystem: "Gestionar Roles y Permisos",
+    manageMinistries: "Gestionar Ministerios y Cargos",
 };
 
 /**
@@ -24,8 +25,8 @@ export function useRoleInfo(roleId) {
     const [loading, setLoading] = useState(true);
 
     const defaultRoles = {
-        admin: { nombre: "Administrador", permisos: ["dashboard", "viewMembers", "createEvents", "peticiones", "horarios", "calendario", "redes", "editUsers", "manageSystem"] },
-        pastor: { nombre: "Pastor", permisos: ["dashboard", "viewMembers", "peticiones", "horarios", "calendario"] },
+        admin: { nombre: "Administrador", permisos: ["dashboard", "viewMembers", "createEvents", "peticiones", "horarios", "calendario", "redes", "editUsers", "manageSystem", "manageMinistries"] },
+        pastor: { nombre: "Pastor", permisos: ["dashboard", "viewMembers", "peticiones", "horarios", "calendario", "manageMinistries"] },
         comunicaciones: { nombre: "Comunicaciones", permisos: ["createEvents", "redes"] },
         user: { nombre: "Usuario Base", permisos: [] },
     };

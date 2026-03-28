@@ -26,6 +26,7 @@ export default function RolesManager() {
     calendario: false,
     editUsers: false,
     manageSystem: false,
+    manageMinistries: false,
   });
   const [editingRoleId, setEditingRoleId] = useState(null);
 
@@ -43,12 +44,12 @@ export default function RolesManager() {
         {
           id: "admin",
           nombre: "Administrador",
-          permisos: ["viewMembers", "createEvents", "peticiones", "calendario", "editUsers", "manageSystem"],
+          permisos: ["viewMembers", "createEvents", "peticiones", "calendario", "editUsers", "manageSystem", "manageMinistries"],
         },
         {
           id: "pastor",
           nombre: "Pastor",
-          permisos: ["viewMembers", "peticiones", "calendario"],
+          permisos: ["viewMembers", "peticiones", "calendario", "manageMinistries"],
         },
         {
           id: "comunicaciones",
@@ -133,6 +134,7 @@ export default function RolesManager() {
       calendario: false,
       editUsers: false,
       manageSystem: false,
+      manageMinistries: false,
     });
     setEditingRoleId(null);
   };
@@ -152,6 +154,7 @@ export default function RolesManager() {
       calendario: rolePerms.includes("calendario"),
       editUsers: rolePerms.includes("editUsers"),
       manageSystem: rolePerms.includes("manageSystem"),
+      manageMinistries: rolePerms.includes("manageMinistries"),
     });
     setShowModal(true);
   };
@@ -244,7 +247,9 @@ export default function RolesManager() {
                                       ? "Editar Usuarios"
                                       : perm === "manageSystem"
                                         ? "Gestionar Roles y Permisos"
-                                        : perm}
+                                        : perm === "manageMinistries"
+                                          ? "Gestionar Ministerios y Cargos"
+                                          : perm}
                         </span>
                       </li>
                     ))
@@ -438,6 +443,22 @@ export default function RolesManager() {
                     />
                     <span className="text-sm font-medium text-slate-700 group-hover:text-slate-900 transition-colors">
                       Gestionar Roles y Permisos (Control Total)
+                    </span>
+                  </label>
+                  <label className="flex items-center gap-3 cursor-pointer group">
+                    <input
+                      type="checkbox"
+                      checked={permissions.manageMinistries}
+                      onChange={(e) =>
+                        setPermissions({
+                          ...permissions,
+                          manageMinistries: e.target.checked,
+                        })
+                      }
+                      className="w-5 h-5 text-primary border-slate-300 rounded focus:ring-primary/30"
+                    />
+                    <span className="text-sm font-medium text-slate-700 group-hover:text-slate-900 transition-colors">
+                      Gestionar Ministerios y Cargos
                     </span>
                   </label>
                 </div>

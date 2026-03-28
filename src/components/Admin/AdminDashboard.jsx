@@ -9,6 +9,7 @@ import PrayerRequestsManager from "../Pastor/PrayerRequestsManager";
 import CalendarManager from "../Pastor/CalendarManager";
 import ScheduleManager from "../Pastor/ScheduleManager";
 import SocialMediaManager from "../Comunicaciones/SocialMediaManager";
+import MinistriesManager from "../Pastor/MinistriesManager";
 import RoleBadge from "../shared/RoleBadge";
 import { Menu, Bell, Home } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
@@ -77,6 +78,8 @@ export default function AdminDashboard() {
         return <ScheduleManager />;
       case "calendario":
         return <CalendarManager />;
+      case "manageMinistries":
+        return <MinistriesManager />;
       default:
         return (
           <div className="flex flex-col items-center justify-center min-h-[400px] bg-white rounded-3xl shadow-sm ring-1 ring-slate-200/50 p-12 text-center border-dashed border-2 border-slate-100">

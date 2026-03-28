@@ -7,6 +7,7 @@ import PrayerRequestsManager from "./PrayerRequestsManager";
 import PastorDashboardStats from "./PastorDashboardStats";
 import CalendarManager from "./CalendarManager";
 import ScheduleManager from "./ScheduleManager";
+import MinistriesManager from "./MinistriesManager";
 import AdminSidebar from "../Admin/Layout/Sidebar";
 import { useRoleInfo } from "../../hooks/useRoleInfo";
 import { ALL_ADMIN_NAVIGATION } from "../Admin/adminNavigation";
@@ -56,6 +57,8 @@ export default function PastorDashboard() {
         return <PrayerRequestsManager />;
       case "horarios":
         return <ScheduleManager />;
+      case "manageMinistries":
+        return <MinistriesManager />;
       default:
         return (
           <div className="flex flex-col items-center justify-center min-h-[400px] bg-white rounded-3xl shadow-sm ring-1 ring-slate-200/50 p-12 text-center border-dashed border-2 border-slate-100">

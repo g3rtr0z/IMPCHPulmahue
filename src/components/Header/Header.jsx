@@ -19,7 +19,7 @@ export default function Header() {
         const element = document.getElementById(section);
         if (element) {
           const rect = element.getBoundingClientRect();
-          if (rect.top <= 110 && rect.bottom >= 110) {
+          if (rect.top <= 120 && rect.bottom >= 120) {
             setActiveHash(`#${section}`);
             break;
           }

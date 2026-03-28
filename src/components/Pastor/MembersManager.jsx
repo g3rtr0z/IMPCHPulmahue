@@ -31,7 +31,7 @@ export default function MembersManager() {
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [createAccess, setCreateAccess] = useState(false);
+  const [ministryOps, setMinistryOps] = useState([]);
 
   // Form state
   const [editingId, setEditingId] = useState(null);
@@ -67,8 +67,24 @@ export default function MembersManager() {
     }
   };
 
+  const fetchMinistryOps = async () => {
+    try {
+      const q = query(
+        collection(db, "ministerio_list"),
+        orderBy("nombre", "asc"),
+      );
+      const snap = await getDocs(q);
+      const list = [];
+      snap.forEach((doc) => list.push({ id: doc.id, ...doc.data() }));
+      setMinistryOps(list);
+    } catch (err) {
+      console.error("Error fetching ministries list:", err);
+    }
+  };
+
   useEffect(() => {
     fetchMembers();
+    fetchMinistryOps();
   }, []);
 
   const handleOpenModal = (member = null) => {
@@ -96,7 +112,6 @@ export default function MembersManager() {
         fechaIngreso: new Date().toISOString().split("T")[0],
         estado: "activo",
       });
-      setCreateAccess(false);
     }
     setShowModal(true);
   };
@@ -108,68 +123,21 @@ export default function MembersManager() {
     setSuccess("");
 
     try {
-      if (!editingId && createAccess && !formData.email) {
-        setError(
-          "Debe ingresar un Correo Electrónico válido para crearle un acceso.",
-        );
-        setFormLoading(false);
-        return;
-      }
-
       const memberRef = editingId
         ? doc(db, "miembros", editingId)
         : doc(collection(db, "miembros"));
-
-      let linkedUserId = null;
-
-      if (!editingId && createAccess && formData.email) {
-        const secondaryApp = initializeApp(
-          firebaseConfig,
-          "SecondaryPastor" + Date.now(),
-        );
-        const secondaryAuth = getAuth(secondaryApp);
-        const tempPassword =
-          "Impch" + Math.random().toString(36).slice(-6) + "!";
-
-        const userCredential = await createUserWithEmailAndPassword(
-          secondaryAuth,
-          formData.email,
-          tempPassword,
-        );
-        const newUser = userCredential.user;
-        linkedUserId = newUser.uid;
-
-        // Guardar rol de acceso
-        await setDoc(doc(db, "users", linkedUserId), {
-          email: newUser.email,
-          nombre: formData.nombre,
-          role: "user",
-          estado: "activo",
-          createdAt: serverTimestamp(),
-        });
-
-        // Enviar inmediatamente correo para que el "Miembro" ingrese a su cuenta
-        await sendWelcomeEmail(formData.email, tempPassword);
-        await secondaryAuth.signOut();
-      }
 
       await setDoc(
         memberRef,
         {
           ...formData,
-          ...(linkedUserId ? { userId: linkedUserId } : {}),
           updatedAt: serverTimestamp(),
           ...(editingId ? {} : { createdAt: serverTimestamp() }),
         },
         { merge: true },
       );
 
-      setSuccess(
-        "Miembro guardado exitosamente." +
-          (createAccess
-            ? " Se envió un correo con sus credenciales al hermano(a)."
-            : ""),
-      );
+      setSuccess("Miembro guardado exitosamente.");
       setTimeout(() => {
         setShowModal(false);
         fetchMembers();
@@ -380,15 +348,23 @@ export default function MembersManager() {
                   <label className="block text-sm font-semibold mb-1 text-slate-700">
                     Ministerio / Cargo
                   </label>
-                  <input
-                    type="text"
+                  <select
                     value={formData.ministerio}
                     onChange={(e) =>
-                      setFormData({ ...formData, ministerio: e.target.value })
+                      setFormData({ ...formData, ministryId: e.target.value, ministerio: e.target.options[e.target.selectedIndex].text })
                     }
-                    className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none bg-slate-50 focus:bg-white transition-all"
-                    placeholder="Ej. Coro Oficial"
-                  />
+                    className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none bg-slate-50 focus:bg-white transition-all appearance-none cursor-pointer"
+                  >
+                    <option value="">-- Sin Cargo Asignado --</option>
+                    {ministryOps.map((op) => (
+                      <option key={op.id} value={op.nombre}>
+                        {op.nombre}
+                      </option>
+                    ))}
+                    <option value="OTRO" className="font-bold text-primary italic">
+                      + Gestionar Ministerios (Desde el Menú Lateral)
+                    </option>
+                  </select>
                 </div>
                 <div>
                   <label className="block text-sm font-semibold mb-1 text-slate-700">
@@ -458,36 +434,6 @@ export default function MembersManager() {
                   </select>
                 </div>
               </div>
-
-              {!editingId && (
-                <div className="pt-4 border-t border-slate-100 mt-2">
-                  <label className="flex items-center gap-2 cursor-pointer group w-fit">
-                    <div className="relative flex items-center justify-center">
-                      <input
-                        type="checkbox"
-                        checked={createAccess}
-                        onChange={(e) => setCreateAccess(e.target.checked)}
-                        className="w-5 h-5 rounded-md border-slate-300 text-primary focus:ring-primary/30 transition-all peer cursor-pointer appearance-none checked:bg-primary checked:border-primary ring-1 ring-slate-200"
-                      />
-                      <CheckCircle2 className="w-3.5 h-3.5 text-white absolute opacity-0 peer-checked:opacity-100 pointer-events-none transition-opacity" />
-                    </div>
-                    <span className="text-sm font-bold text-slate-700 group-hover:text-primary transition-colors">
-                      Habilitar acceso al portal web
-                    </span>
-                  </label>
-                  {createAccess && (
-                    <div className="mt-3 ml-7 p-3 bg-blue-50/80 rounded-xl border border-blue-100">
-                      <p className="text-xs text-blue-700 leading-relaxed font-medium">
-                        Al guardar, se creará una cuenta activa vinculada y se
-                        enviará instantáneamente un hermoso correo institucional
-                        a <strong>{formData.email || "este correo"}</strong> con
-                        un usuario y contraseña segura para que ingrese desde
-                        hoy mismo a la plataforma.
-                      </p>
-                    </div>
-                  )}
-                </div>
-              )}
 
               <div className="pt-6 flex gap-3">
                 <button
