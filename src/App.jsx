@@ -1,31 +1,17 @@
 import { Routes, Route, useLocation } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import Header from "./components/Header/Header.jsx";
-import Hero from "./components/Hero/Hero.jsx";
-import Services from "./components/Services/Services.jsx";
-import Ministries from "./components/Ministries/Ministries";
-import News from "./components/News/News.jsx";
-import NewsDetail from "./components/News/NewsDetail";
-import Contact from "./components/Contact/Contact.jsx";
 import Footer from "./components/Footer/Footer.jsx";
-import Login from "./components/Auth/Login";
-import ResetPasswordHandler from "./components/Auth/ResetPasswordHandler";
 import ProtectedRoute from "./components/Auth/ProtectedRoute";
-import AdminDashboard from "./components/Admin/AdminDashboard";
-import PastorDashboard from "./components/Pastor/PastorDashboard";
-import ComunicacionesDashboard from "./components/Comunicaciones/ComunicacionesDashboard";
 
-function Home() {
-  return (
-    <>
-      <Hero />
-      <Services />
-      <Ministries />
-      <News />
-      <Contact />
-    </>
-  );
-}
+// New Page Imports
+import HomePage from "./pages/Home/HomePage";
+import LoginPage from "./pages/Auth/LoginPage";
+import AuthActionPage from "./pages/Auth/AuthActionPage";
+import NewsDetailPage from "./pages/News/NewsDetailPage";
+import AdminDashboardPage from "./pages/Admin/AdminDashboardPage";
+import PastorDashboardPage from "./pages/Pastor/PastorDashboardPage";
+import ComunicacionesDashboardPage from "./pages/Comunicaciones/ComunicacionesDashboardPage";
 
 function App() {
   const location = useLocation();
@@ -48,15 +34,15 @@ function App() {
         {!hideLayout && <Header />}
         <main className={hideLayout ? "h-full w-full" : "flex-grow"}>
           <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/auth/action" element={<ResetPasswordHandler />} />
-            <Route path="/noticia/:id" element={<NewsDetail />} />
+            <Route path="/" element={<HomePage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/auth/action" element={<AuthActionPage />} />
+            <Route path="/noticia/:id" element={<NewsDetailPage />} />
             <Route
               path="/admin"
               element={
                 <ProtectedRoute roleRequired="admin">
-                  <AdminDashboard />
+                  <AdminDashboardPage />
                 </ProtectedRoute>
               }
             />
@@ -64,7 +50,7 @@ function App() {
               path="/pastor"
               element={
                 <ProtectedRoute roleRequired="pastor">
-                  <PastorDashboard />
+                  <PastorDashboardPage />
                 </ProtectedRoute>
               }
             />
@@ -72,7 +58,7 @@ function App() {
               path="/comunicaciones"
               element={
                 <ProtectedRoute roleRequired="comunicaciones">
-                  <ComunicacionesDashboard />
+                  <ComunicacionesDashboardPage />
                 </ProtectedRoute>
               }
             />

@@ -93,23 +93,26 @@ export default function Header() {
         {/* Main Header Row - Always White/Solid */}
         <div className="w-full h-20 flex justify-center py-0">
           <div className="max-w-[1400px] w-full relative flex items-center justify-between px-8 lg:px-12">
-            
-            {/* Left Column: Branding */}
-            <div className="flex-1 flex justify-start items-center">
+
+            {/* Spacer on mobile left to keep branding centered */}
+            <div className="lg:hidden flex-1" />
+
+            {/* Branding Column: Lg:Left, Max-Lg:Absolute Center */}
+            <div className="flex-1 flex justify-start items-center h-full max-lg:absolute max-lg:inset-0 max-lg:justify-center pointer-events-none">
               <a
                 href="/"
                 onClick={(e) => { e.preventDefault(); navigate('/'); setMobileOpen(false); setActiveHash('#inicio'); }}
-                className="flex items-center gap-5 group"
+                className="flex items-center gap-3 lg:gap-5 group pointer-events-auto"
               >
-                <img src="/logo-impch.png" alt="Logo IMPCH" className="h-12 w-auto object-contain transition-transform duration-500 group-hover:scale-110" />
-                <div className="flex flex-col">
-                  <span className="font-serif italic text-2xl text-impch-primary font-bold leading-none">IMPCH</span>
-                  <span className="font-sans text-[11px] uppercase tracking-[0.35em] font-extrabold text-[#111827]">Pulmahue</span>
+                <img src="/logo-impch.png" alt="Logo IMPCH" className="h-10 lg:h-12 w-auto object-contain transition-transform duration-500 group-hover:scale-110" />
+                <div className="flex flex-col items-center lg:items-start text-center lg:text-left">
+                  <span className="font-serif italic text-xl lg:text-2xl text-impch-primary font-bold leading-none">IMPCH</span>
+                  <span className="font-sans text-[9px] lg:text-[11px] uppercase tracking-[0.35em] font-extrabold text-[#111827]">Pulmahue</span>
                 </div>
               </a>
             </div>
 
-            {/* Center Column: Full Navigation */}
+            {/* Center Column: Full Navigation (Desktop) */}
             <nav className="hidden lg:flex items-center justify-center gap-12">
               {navLinks.map((link) => {
                 const isActive = activeHash === link.href && location.pathname === '/';
@@ -128,21 +131,25 @@ export default function Header() {
               })}
             </nav>
 
-            {/* Right Column: Actions */}
-            <div className="flex-1 hidden lg:flex items-center justify-end">
-              <button
-                onClick={currentUser ? handlePortal : () => navigate('/login')}
-                className="flex items-center justify-center gap-2 px-8 py-3 rounded-full text-[10px] font-bold uppercase tracking-widest bg-impch-primary text-white hover:bg-impch-accent shadow-md transition-all duration-300 transform active:scale-95"
-              >
-                <User className="w-3.5 h-3.5" />
-                {currentUser ? 'Portal' : 'Miembros'}
-              </button>
-            </div>
+            {/* Right Column: Actions (Desktop) */}
+            <div className="flex-1 flex items-center justify-end">
+              <div className="hidden lg:flex items-center justify-end">
+                <button
+                  onClick={currentUser ? handlePortal : () => navigate('/login')}
+                  className="flex items-center justify-center gap-2 px-8 py-3 rounded-full text-[10px] font-bold uppercase tracking-widest bg-impch-primary text-white hover:bg-impch-accent shadow-md transition-all duration-300 transform active:scale-95"
+                >
+                  <User className="w-3.5 h-3.5" />
+                  {currentUser ? 'Portal' : 'Miembros'}
+                </button>
+              </div>
 
-            {/* Mobile Menu Toggle */}
-            <button className="lg:hidden p-2 text-slate-900" onClick={() => setMobileOpen((v) => !v)}>
-              {mobileOpen ? <X className="w-8 h-8" /> : <Menu className="w-8 h-8" />}
-            </button>
+              {/* Mobile Menu Toggle - Right Side */}
+              <div className="lg:hidden">
+                <button className="p-2 text-slate-900" onClick={() => setMobileOpen((v) => !v)}>
+                  {mobileOpen ? <X className="w-8 h-8" /> : <Menu className="w-8 h-8" />}
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </header>
