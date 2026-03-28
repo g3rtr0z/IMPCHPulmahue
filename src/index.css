@@ -1,0 +1,137 @@
+@import "tailwindcss";
+
+@theme {
+  /* =========================================
+     Colores Institucionales IMPCH Pulmahue
+     ========================================= */
+  /* Azules Marinos (Principal) */
+  --color-impch-primary: #1e3a5f;
+  --color-impch-primary-hover: #2a4a7a;
+
+  /* Azules de Acento (Botones, Iconos, Destacados) */
+  --color-impch-accent: #3b82f6;
+  /* blue-500 equivalent */
+  --color-impch-accent-hover: #2563eb;
+  /* blue-600 equivalent */
+  --color-impch-accent-light: #60a5fa;
+  /* blue-400 equivalent */
+
+  /* Colores Oscuros (Fondos de Dashboards y Login) */
+  --color-impch-dark-bg: #0a1120;
+  /* Fondo súper oscuro */
+  --color-impch-dark-panel: #0f172a;
+  /* Color de tarjetas/paneles oscuros */
+
+  /* Manteniendo nombres genéricos antiguos por compatibilidad */
+  --color-primary: #1e3a5f;
+  --color-primary-hover: #2a4a7a;
+  --color-primary-light: #60a5fa;
+  --color-text-muted: #718096;
+
+  /* =========================================
+     Tipografía y Extras
+     ========================================= */
+  --font-serif: "Cormorant Garamond", Georgia, serif;
+  --font-sans: "Source Sans 3", system-ui, sans-serif;
+
+  --shadow-soft: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  --shadow-glow: 0 0 20px rgba(59, 130, 246, 0.2);
+}
+
+@layer base {
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 160px;
+    /* Ocultar barra de scroll en todos los navegadores */
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE y Edge */
+  }
+
+  /* Ocultar barra de scroll en Chrome/Safari/Brave */
+  html::-webkit-scrollbar,
+  body::-webkit-scrollbar {
+    display: none;
+  }
+
+  body {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    line-height: 1.625;
+    color: #111827;
+    background-color: #f8fafc;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+
+  #root {
+    min-height: 100vh;
+  }
+
+  a {
+    color: var(--color-primary);
+  }
+
+  a:hover {
+    text-decoration: none;
+  }
+
+  img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  button {
+    font-family: var(--font-sans);
+    cursor: pointer;
+  }
+
+  input,
+  textarea {
+    font-family: var(--font-sans);
+    font-size: 1rem;
+  }
+}
+
+/* Hero: imagen de fondo (URL externa) */
+.hero-bg-image {
+  background-image: url('/hero.jpeg');
+}
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.4s ease-out both;
+}
+
+.anim-form {
+  animation: slideUp 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.animate-shake {
+  animation: shake 0.4s ease-in-out;
+}
