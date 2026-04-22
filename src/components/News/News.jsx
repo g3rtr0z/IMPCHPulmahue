@@ -224,57 +224,68 @@ export default function News() {
                         <div className="w-8 h-8 border-2 border-slate-200 border-t-slate-900 rounded-full animate-spin"></div>
                     </div>
                 ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-x-8 md:gap-y-16">
                         {news.length > 0 ? (
                             news.map((item) => (
                                 <article
                                     key={item.id}
-                                    className="group flex flex-col cursor-pointer"
+                                    className="group flex flex-col bg-white rounded-3xl border border-slate-100 overflow-hidden hover:shadow-xl hover:shadow-slate-200/50 transition-all duration-500 cursor-pointer"
                                     onClick={() => navigate(`/noticia/${item.id}`)}
                                 >
-                                    <div className="relative aspect-[16/10] overflow-hidden rounded-2xl bg-slate-50 mb-6 group-hover:shadow-lg transition-all duration-500">
+                                    {/* Image Container */}
+                                    <div className="relative aspect-[16/10] overflow-hidden bg-slate-100">
                                         {isComms && (
                                             <button
                                                 onClick={(e) => { e.stopPropagation(); handleDelete(item.id); }}
-                                                className="absolute top-4 right-4 z-30 bg-white/80 backdrop-blur-sm text-slate-400 w-8 h-8 flex items-center justify-center hover:text-rose-500 transition-all rounded-full border border-slate-100"
+                                                className="absolute top-4 right-4 z-30 bg-white/90 backdrop-blur-md text-slate-400 w-9 h-9 flex items-center justify-center hover:text-rose-500 transition-all rounded-full shadow-sm"
                                             >
                                                 <X className="w-4 h-4" />
                                             </button>
                                         )}
-                                        <img
-                                            src={item.imagen}
-                                            alt={item.titulo}
-                                            className="absolute inset-0 w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-700 group-hover:scale-105"
-                                        />
+                                        {item.imagen ? (
+                                            <img
+                                                src={item.imagen}
+                                                alt={item.titulo}
+                                                className="absolute inset-0 w-full h-full object-cover grayscale-[10%] group-hover:grayscale-0 transition-all duration-700 group-hover:scale-110"
+                                            />
+                                        ) : (
+                                            <div className="absolute inset-0 flex items-center justify-center bg-slate-50">
+                                                <span className="text-slate-300 font-serif italic text-4xl opacity-20 select-none">IMPCH</span>
+                                            </div>
+                                        )}
                                         <div className="absolute bottom-4 left-4">
-                                            <span className="bg-white/90 backdrop-blur-md text-[9px] font-bold uppercase tracking-[0.15em] px-3 py-1.5 rounded-lg text-slate-900 border border-slate-100">
+                                            <span className="bg-slate-900/80 backdrop-blur-md text-[9px] font-bold uppercase tracking-[0.15em] px-3 py-1.5 rounded-lg text-white border border-white/10">
                                                 {item.autor}
                                             </span>
                                         </div>
                                     </div>
-
-                                    <div className="flex flex-col flex-grow">
-                                        <div className="flex items-center gap-2 mb-3">
-                                            <span className="text-[10px] font-bold text-slate-300 uppercase tracking-widest">
+ 
+                                    <div className="flex flex-col p-8 flex-grow">
+                                        <div className="flex items-center gap-2 mb-4">
+                                            <div className="w-1.5 h-1.5 rounded-full bg-impch-primary" />
+                                            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
                                                 {item.fecha_display}
                                             </span>
                                         </div>
-                                        <h3 className="text-xl font-sans font-bold text-slate-900 mb-3 leading-snug group-hover:text-primary transition-colors duration-300">
+                                        
+                                        <h3 className="text-xl lg:text-2xl font-serif font-bold text-slate-900 mb-4 leading-tight group-hover:text-impch-primary transition-colors duration-300">
                                             {item.titulo}
                                         </h3>
-                                        <p className="text-slate-500 text-sm line-clamp-2 leading-relaxed mb-6 font-medium">
+                                        
+                                        <p className="text-slate-500 text-sm line-clamp-3 leading-relaxed mb-8 font-medium">
                                             {item.resumen}
                                         </p>
+                                        
                                         <div className="mt-auto">
-                                            <span className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.2em] text-slate-900 group-hover:text-primary transition-colors duration-300">
-                                                Leer más
+                                            <button className="w-full sm:w-auto inline-flex items-center justify-center gap-3 px-6 py-3 bg-slate-50 group-hover:bg-impch-primary text-slate-900 group-hover:text-white rounded-xl text-[11px] font-bold uppercase tracking-widest transition-all duration-500 border border-slate-100 group-hover:border-impch-primary group-hover:shadow-lg group-hover:shadow-impch-primary/20">
+                                                Leer noticia completa
                                                 <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-                                            </span>
+                                            </button>
                                         </div>
                                     </div>
                                 </article>
-                            )
-                            )) : (
+                            ))
+                        ) : (
                             <div className="col-span-full py-20 text-center border border-dashed border-slate-100 rounded-3xl">
                                 <p className="text-slate-400 text-sm font-medium tracking-wide">No se encontraron noticias publicadas.</p>
                             </div>
