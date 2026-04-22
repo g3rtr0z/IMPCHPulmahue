@@ -78,7 +78,7 @@ export default function Hero() {
               transition={{ duration: 0.6, delay: 0.1 }}
               className="font-sans font-bold text-white mb-6 lg:mb-8 text-[32px] sm:text-[45px] lg:text-[clamp(2.5rem,5.5vw,4.2rem)] leading-[1.2] lg:leading-[1.1] tracking-tight"
             >
-              Pregonando con Poder<br className="hidden sm:block" />
+              Pregonando con Poder <br className="hidden sm:block" />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-white to-white/50">
                 el Evangelio de Salvación
               </span>

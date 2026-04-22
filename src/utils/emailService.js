@@ -10,7 +10,7 @@ const PUBLIC_KEY = "TU_PUBLIC_KEY_AQUI"; // Ej: aBcdEfG1234567
 /**
  * Función para enviar un correo de bienvenida con credenciales temporales.
  * @param {string} userEmail - El correo del usuario.
- * @param {string} tempPassword - La contraseña temporal generada.
+ * @param {string} tempPassword  - La contraseña temporal generada.
  */
 export const sendWelcomeEmail = async (userEmail, tempPassword) => {
   try {

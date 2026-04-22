@@ -97,14 +97,19 @@ export default function Header() {
             {/* Spacer on mobile left to keep branding centered */}
             <div className="lg:hidden flex-1" />
 
-            {/* Branding Column: Lg:Left, Max-Lg:Absolute Center */}
-            <div className="flex-1 flex justify-start items-center h-full max-lg:absolute max-lg:inset-0 max-lg:justify-center pointer-events-none">
+            {/* Branding Column: Lg:Left-aligned, Max-Lg:Horizontal Center */}
+            <div className="flex-1 flex items-center lg:justify-start justify-center h-full z-10">
               <a
                 href="/"
                 onClick={(e) => { e.preventDefault(); navigate('/'); setMobileOpen(false); setActiveHash('#inicio'); }}
-                className="flex items-center gap-3 lg:gap-5 group pointer-events-auto"
+                className="flex items-center gap-3 lg:gap-5 group relative"
               >
-                <img src="/logo-impch.png" alt="Logo IMPCH" className="h-10 lg:h-12 w-auto object-contain transition-transform duration-500 group-hover:scale-110" />
+                <img 
+                  src="/logo-impch.png" 
+                  alt="Logo IMPCH" 
+                  className="h-10 lg:h-12 w-auto object-contain transition-transform duration-500 group-hover:scale-110 
+                             max-lg:absolute max-lg:right-full max-lg:mr-3" 
+                />
                 <div className="flex flex-col items-center lg:items-start text-center lg:text-left">
                   <span className="font-serif italic text-xl lg:text-2xl text-impch-primary font-bold leading-none">IMPCH</span>
                   <span className="font-sans text-[9px] lg:text-[11px] uppercase tracking-[0.35em] font-extrabold text-[#111827]">Pulmahue</span>
