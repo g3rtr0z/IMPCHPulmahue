@@ -1,0 +1,24 @@
+On branch design/ministry-cards-alternative
+Changes not staged for commit:
+  (use "git add/rm <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   src/App.jsx
+	deleted:    src/components/Admin/AdminDashboard.jsx
+	deleted:    src/components/Auth/Login.jsx
+	deleted:    src/components/Auth/ResetPasswordHandler.jsx
+	deleted:    src/components/Comunicaciones/ComunicacionesDashboard.jsx
+	modified:   src/components/Header/Header.jsx
+	modified:   src/components/Hero/Hero.jsx
+	modified:   src/components/Ministries/Ministries.jsx
+	modified:   src/components/Ministries/MinistryCard.jsx
+	deleted:    src/components/News/NewsDetail.jsx
+	deleted:    src/components/Pastor/PastorDashboard.jsx
+	modified:   src/components/Services/Services.jsx
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	files.txt
+	git_status.txt
+	src/pages/
+
+no changes added to commit (use "git add" and/or "git commit -a")
