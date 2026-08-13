@@ -5,15 +5,15 @@ import Hero from "./components/Hero/Hero.jsx";
 import Services from "./components/Services/Services.jsx";
 import Ministries from "./components/Ministries/Ministries";
 import News from "./components/News/News.jsx";
-import NewsDetail from "./components/News/NewsDetail";
+import NewsDetail from "./pages/NewsDetailPage";
 import Contact from "./components/Contact/Contact.jsx";
 import Footer from "./components/Footer/Footer.jsx";
-import Login from "./components/Auth/Login";
-import ResetPasswordHandler from "./components/Auth/ResetPasswordHandler";
+import Login from "./pages/LoginPage";
+import ResetPasswordHandler from "./pages/AuthActionPage";
 import ProtectedRoute from "./components/Auth/ProtectedRoute";
-import AdminDashboard from "./components/Admin/AdminDashboard";
-import PastorDashboard from "./components/Pastor/PastorDashboard";
-import ComunicacionesDashboard from "./components/Comunicaciones/ComunicacionesDashboard";
+import AdminDashboard from "./pages/AdminDashboardPage";
+import PastorDashboard from "./pages/PastorDashboardPage";
+import ComunicacionesDashboard from "./pages/ComunicacionesDashboardPage";
 
 function Home() {
   return (

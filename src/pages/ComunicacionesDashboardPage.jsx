@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { Menu, Home } from "lucide-react";
-import NewsManager from "./NewsManager";
-import SocialMediaManager from "./SocialMediaManager";
-import AdminSidebar from "../Admin/Layout/Sidebar";
-import { useRoleInfo } from "../../hooks/useRoleInfo";
-import { ALL_ADMIN_NAVIGATION } from "../Admin/adminNavigation";
+import NewsManager from "../components/Comunicaciones/NewsManager";
+import SocialMediaManager from "../components/Comunicaciones/SocialMediaManager";
+import AdminSidebar from "../components/Admin/Layout/Sidebar";
+import { useRoleInfo } from "../hooks/useRoleInfo";
+import { ALL_ADMIN_NAVIGATION } from "../components/Admin/adminNavigation";
 
 export default function ComunicacionesDashboard() {
     const { userRole, loading: authLoading } = useAuth();

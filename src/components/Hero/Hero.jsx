@@ -5,7 +5,7 @@ export default function Hero() {
   const navigate = useNavigate();
 
   return (
-    <section id="inicio" className="relative min-h-screen flex items-center justify-center overflow-hidden bg-slate-900 pt-[160px]">
+    <section id="inicio" className="relative min-h-screen flex items-center justify-center overflow-hidden bg-slate-900 pt-[112px]">
       {/* Background Image - Sober fade instead of extreme zoom */}
       <div
         className="absolute inset-0 hero-bg-image bg-cover bg-center opacity-40 mix-blend-luminosity"

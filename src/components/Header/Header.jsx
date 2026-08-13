@@ -19,7 +19,7 @@ export default function Header() {
         const element = document.getElementById(section);
         if (element) {
           const rect = element.getBoundingClientRect();
-          if (rect.top <= 140 && rect.bottom >= 140) {
+          if (rect.top <= 112 && rect.bottom >= 112) {
             setActiveHash(`#${section}`);
             break;
           }
@@ -64,7 +64,7 @@ export default function Header() {
     <>
       <header className="fixed top-0 left-0 right-0 w-full z-[100] shadow-md bg-white border-b border-slate-100">
         {/* Upper Top Bar - Always Visible Navy Blue */}
-        <div className="hidden lg:block bg-[#1e3a5f] text-white/90 h-10">
+        <div className="hidden lg:block bg-[#1e3a5f] text-white/90 h-8">
           <div className="max-w-[1400px] mx-auto h-full px-8 flex justify-between items-center text-[10px] uppercase tracking-widest font-semibold">
             <div className="flex gap-8">
               <span className="flex items-center gap-2">
@@ -91,7 +91,7 @@ export default function Header() {
         </div>
 
         {/* Main Header Row - Always White/Solid */}
-        <div className="w-full h-28 flex justify-center py-0">
+        <div className="w-full h-20 flex justify-center py-0">
           <div className="max-w-[1400px] w-full relative flex items-center justify-between px-8 lg:px-12">
             
             {/* Left Column: Branding */}
@@ -101,7 +101,7 @@ export default function Header() {
                 onClick={(e) => { e.preventDefault(); navigate('/'); setMobileOpen(false); setActiveHash('#inicio'); }}
                 className="flex items-center gap-5 group"
               >
-                <img src="/logo-impch.png" alt="Logo IMPCH" className="h-16 w-auto object-contain transition-transform duration-500 group-hover:scale-110" />
+                <img src="/logo-impch.png" alt="Logo IMPCH" className="h-14 w-auto object-contain transition-transform duration-500 group-hover:scale-110" />
                 <div className="flex flex-col">
                   <span className="font-serif italic text-2xl text-impch-primary font-bold leading-none">IMPCH</span>
                   <span className="font-sans text-[11px] uppercase tracking-[0.35em] font-extrabold text-[#111827]">Pulmahue</span>

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "../context/AuthContext";
 import {
   collection,
   query,
@@ -12,10 +12,10 @@ import {
   serverTimestamp,
   updateDoc,
 } from "firebase/firestore";
-import { auth, db, firebaseConfig } from "../../firebase";
+import { auth, db, firebaseConfig } from "../firebase";
 import { initializeApp } from "firebase/app";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
-import { sendWelcomeEmail } from "../../utils/emailService";
+import { sendWelcomeEmail } from "../utils/emailService";
 
 export default function Login() {
   const [email, setEmail] = useState("");
